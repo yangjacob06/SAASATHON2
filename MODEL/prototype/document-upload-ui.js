@@ -556,4 +556,7 @@
   document.addEventListener("drop", function (event) {
     const target = event.target instanceof Element ? event.target.closest("#documentDropZone") : null;
     if (!target) return;
-    eve
+    event.preventDefault();
+    processFiles(event.dataTransfer.files);
+  });
+})(window);

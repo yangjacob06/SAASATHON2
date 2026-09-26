@@ -1,0 +1,35 @@
+{
+  "name": "mandate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Mandate — deal preparation and lender matching for New Zealand commercial finance advisers.",
+  "scripts": {
+    "dev": "next dev --port 3310",
+    "build": "next build",
+    "start": "next start --port 3310",
+    "lint": "next lint",
+    "db:setup": "node scripts/db-setup.mjs",
+    "db:seed": "node scripts/db-seed.mjs",
+    "db:reset": "node scripts/db-setup.mjs --force && node scripts/db-seed.mjs"
+  },
+  "dependencies": {
+    "next": "^16.3.3",
+    "openai": "^6.9.1",
+    "pdf-lib": "^1.17.1",
+    "pg": "^8.16.3",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "unpdf": "^1.4.0",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.4.0",
+    "@types/pg": "^8.15.5",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.2"
+  }
+}

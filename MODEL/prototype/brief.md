@@ -12,7 +12,7 @@ The project is a subscription-software concept for New Zealand commercial financ
 
 The current prototype is a single static page. [index.html](index.html) contains both the marketing page and adviser workspace shell. [app.js](app.js) contains the sample deal records, page rendering, interactions, summary template, prewritten lender cards, activity list, and stage changes. [styles.css](styles.css) provides base styling and [layout.css](layout.css) adds later workspace layout overrides, including responsive rules. The demo's three deals and lender matches are hard-coded in JavaScript. Changes are held in memory for the page session; the theme preference is saved in local storage. No backend or model call is present.
 
-Current controls labelled New deal do not create a record. Adding a document, editing a deal, and adding a note are placeholders. The current summary is a sentence template and current lender cards are stored labels, not calculated matches. These are the seams the milestones below are intended to replace progressively while keeping the existing sample journey available.
+The New deal controls open a local intake form that saves synthetic drafts in browser memory. On a new deal, an adviser can download and upload bundled fictional CSV examples. The browser reads supported fields locally, preserves their file sources, and flags differing values for adviser resolution. Deal detail and lender criteria screens display the local summary and explainable fictional criteria comparisons. There is no API or model call, and non-CSV documents are not parsed.
 
 ## People and successful outcome
 
@@ -48,9 +48,9 @@ Saving gives the deal a stable unique ID, a `draft` status, timestamps, a synthe
 
 The initial milestone stores new drafts in browser memory only. Tell the user that refreshing the page clears changes. The supplied fictional sample records remain available. Reset should restore the initial sample records, clear session-created records and activity, and return the interface to its initial state.
 
-### 4. Add synthetic documents (later milestone)
+### 4. Add synthetic documents
 
-Let the adviser choose from bundled fictional documents or a clearly simulated document pack. Do not ask users to select real borrower documents for the prototype. For each item, show its name, type, status, and whether its details are fixed sample values or simulated extraction. A document can be added, marked missing, or removed from the draft. Do not imply that a real file was uploaded or analysed when it was not.
+Let the adviser download and select from bundled fictional CSV documents, or drop those files onto the deal. Do not ask users to select real borrower documents for this prototype. For each item, show its name, type, status, and whether its details are fixed sample values or locally read synthetic data. A document can be added or marked missing. Do not imply that a real file was uploaded or analysed when it was not.
 
 The later model/API path can accept permitted documents through a backend, extract proposed fields, and return source references. The interface should show each proposed value with its document/source and review status. If sources disagree, retain both values and flag a conflict for adviser resolution; do not silently pick one.
 
@@ -193,15 +193,27 @@ Keep each milestone small enough for the team to review and leave the existing s
 
 ### Milestone 1: create and reopen a draft
 
-Expected files: `app.js`, `index.html`, `layout.css`, a new `data.js` for initial sample records and shared constants, and this prototype README/brief as needed. Add the New deal form from both existing buttons; support fictional autofill, basic validation, cancel, save to in-memory state, list/detail rendering, and explicit session-only persistence text. Make dashboard/list counts data-driven and make Reset restore all initial data, statuses, and activity. Use safe text rendering for user-entered strings.
+Expected files: `new-deal-ui.js`, `analysis-ui.js`, `index.html`, `layout.css`, and this brief as needed. Add the New deal form from both existing buttons; support fictional autofill, basic validation, cancel, save to in-memory state, list/detail rendering, and explicit session-only persistence text. Make dashboard/list counts data-driven and make Reset restore all initial data, statuses, and activity. Use safe text rendering for user-entered strings.
 
 Acceptance: a visitor can create a fictional deal with required fields, see validation for missing required fields, cancel without creating it, save and reopen it from the deal list, and reset to the original three records. Unknown optional values remain visibly unknown. Refreshing clears the new record and the UI says so. No existing sample deal flow is lost.
 
+**Implementation status:** The local intake form, fictional-example autofill, required-field validation, in-memory save, detail view, dynamic deal counts, mobile overview rows, and reset behavior are implemented in `new-deal-ui.js`. New deals feed the existing summary and criteria engine through `analysis-ui.js`. Expected supporting documents appear as missing until a matching synthetic file is uploaded.
+
+### Analysis-layer groundwork: synthetic inputs and callable output
+
+The analysis layer is in `synthetic-data.js` and `deal-analysis.js`. These files provide three fictional normalized deal records, synthetic document metadata and sample extracted values, three separate fictional lender criteria profiles, a deterministic draft-summary function, and explainable per-criterion comparisons. `index.html` loads the data and analysis before `app.js` and loads `analysis-ui.js` afterwards to connect the outputs to the existing deal detail and lender criteria screens. `document-upload-ui.js` adds the local CSV reader and source review for new deals.
+
+The browser handoff is `window.MandateDealAnalysis.analyzeDeal(deal, lenders)`. It returns `{ dealId, synthetic, summary, lenderComparisons, disclaimer }`. `summary` includes `text`, `status`, `method`, `missingFields`, `missingDocuments`, `conflicts`, `reviewItems`, and an adviser-review flag. Each lender comparison includes the lender identity, an overall illustrative overlap label, outcome counts, criterion checks with the compared value and explanation, and a plain-language explanation. For a bundled scenario, call `window.MandateDealAnalysis.analyzeSyntheticDeal("demo-northstar-civil")`; `window.MandateSyntheticData.getDeal(id)` and `.getLenders()` return fresh copies of sample inputs.
+
+Current overall labels are `several_criteria_align`, `possible_criteria_overlap`, `some_criteria_overlap_gaps_to_check`, `needs_check`, and `no_recorded_criteria_overlap`. Individual criteria use `matches`, `outside_criteria`, or `needs_check`. `analysis-ui.js` maps the three existing sample deal IDs to the normalized scenarios, then presents the returned summary and checks in the existing UI. The comparisons are simple rules over fictional criteria. The summary is a local template, not a model-generated result. Bundled sample records are metadata and extracted-value examples; uploaded CSV files are read locally in the browser only.
+
 ### Milestone 2: synthetic documents and source-aware review
 
-Add a bundled fictional document pack with deterministic sample values. Show source, status, missing values, and conflicts. Allow correcting and confirming extracted sample values. No real file upload or AI call is required.
+**Implementation status:** Implemented for a narrow local CSV sample flow in `document-upload-ui.js`, loaded by `index.html`. Four fictional Kowhai CSVs live in `samples/`. The adviser can download them, select or drop up to five files, and have supported fields read in the browser. Uploads are session-only; file contents are not sent to a service. The management accounts and accountant summary intentionally disagree on annual revenue, making conflict review demonstrable. Deal details show uploaded filenames, extracted values, source labels, and controls to keep the deal value or use an extracted value. Unresolved conflicts are excluded from summary facts and cause affected lender criteria checks to require review.
 
-Acceptance: the adviser can inspect where a sample value came from, resolve a seeded conflict, and see unresolved items remain on the deal checklist.
+The reader accepts CSV files up to 1 MB using the supplied `field,value,currency,period_end` format. It supports the fields listed in `document-upload-ui.js`. This is a synthetic-data parser, not general document extraction: PDF, Word, Excel, OCR, AI analysis, persistent storage, and real borrower documents are out of scope. Matching expected document checklist states update when a sample is uploaded. This milestone needs no API key or backend.
+
+Acceptance: the adviser can inspect where each value came from, resolve a seeded conflict, and see unresolved items remain for review. **Met for the supported synthetic CSV flow.**
 
 ### Milestone 3: editable summary review
 
@@ -211,7 +223,7 @@ Acceptance: the summary reflects the saved deal, can be edited and marked review
 
 ### Milestone 4: explainable fictional criteria comparison
 
-Define lender criteria separately, implement a small set of transparent comparison rules, and render match/gap/needs-check results with the values and reason shown. Include at least one boundary or missing-data example to demonstrate all result states.
+The initial rules, separate fictional criteria records, and display of comparison results are implemented in `synthetic-data.js`, `deal-analysis.js`, and `analysis-ui.js`. Add at least one boundary or missing-data scenario so all result states can be demonstrated. Keep match/gap/needs-check results tied to the compared values and reasons.
 
 Acceptance: each result can be traced to a named fictional criterion and the current deal value. Missing or conflicting values require checking. Every criteria screen says the comparison is illustrative and no lender is contacted.
 
@@ -254,6 +266,10 @@ Until those questions are validated, treat the data fields, document types, crit
 - [Project scope](../../Scope.md)
 - [Prototype page](index.html)
 - [Prototype interactions and sample data](app.js)
+- [Synthetic deal and lender examples](synthetic-data.js)
+- [Summary and criteria analysis](deal-analysis.js)
+- [Analysis interface connection](analysis-ui.js)
+- [New deal intake](new-deal-ui.js)
 - [Prototype base styles](styles.css)
 - [Prototype layout overrides](layout.css)
 - [Adviser interview guide](../../RESEARCH/interview_questions.md)

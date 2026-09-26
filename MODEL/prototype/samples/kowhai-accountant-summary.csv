@@ -1,0 +1,4 @@
+field,value,currency,period_end
+company.name,Kowhai Contracting Ltd,,
+financials.annualRevenue,2800000,NZD,2025-03-31
+financials.ebitda,390000,NZD,2025-03-31

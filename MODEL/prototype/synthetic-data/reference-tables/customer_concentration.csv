@@ -1,0 +1,6 @@
+customer_id,company_id,customer_label,revenue_share_pct,contracted_revenue,contract_expiry,source_document,source_note,synthetic
+CUST-KOWHAI-001,CO-KOWHAI-001,Customer A - synthetic,42,Yes,2027-06-30,Fictional customer schedule,Illustrative anonymised customer; verify with adviser,true
+CUST-KOWHAI-002,CO-KOWHAI-001,Customer B - synthetic,18,Yes,2027-03-31,Fictional customer schedule,Illustrative anonymised customer; verify with adviser,true
+CUST-KOWHAI-003,CO-KOWHAI-001,Customer C - synthetic,12,No,,Fictional customer schedule,Illustrative anonymised customer; verify with adviser,true
+CUST-KOWHAI-004,CO-KOWHAI-001,Customer D - synthetic,10,No,,Fictional customer schedule,Illustrative anonymised customer; verify with adviser,true
+CUST-KOWHAI-005,CO-KOWHAI-001,Other customers - synthetic,18,No,,Fictional customer schedule,Illustrative aggregated balance,true

@@ -1,0 +1,10 @@
+metric_id,deal_id,period_id,metric_name,value,unit,formula,source_record_ids,review_status,source_note,synthetic
+MET-KOWHAI-EBITDA-MARGIN,DEAL-KOWHAI-001,FIN-KOWHAI-2025,ebitda_margin,13.68,percent,EBITDA / revenue * 100,FIN-KOWHAI-2025,Needs adviser review,FY2025 illustrative,true
+MET-KOWHAI-NET-DEBT,DEAL-KOWHAI-001,FIN-KOWHAI-2025,net_debt,480000,NZD,total facility balances - unrestricted cash,FAC-KOWHAI-001;FAC-KOWHAI-002;WC-KOWHAI-2025,Needs adviser review,FY2025 illustrative,true
+MET-KOWHAI-NET-LEVERAGE,DEAL-KOWHAI-001,FIN-KOWHAI-2025,net_debt_to_EBITDA,1.23,multiple,net debt / EBITDA,MET-KOWHAI-NET-DEBT;FIN-KOWHAI-2025,Needs adviser review,FY2025 illustrative,true
+MET-KOWHAI-REVENUE-GROWTH,DEAL-KOWHAI-001,FIN-KOWHAI-2025,revenue_growth,9.62,percent,(FY2025 revenue - FY2024 revenue) / FY2024 revenue * 100,FIN-KOWHAI-2024;FIN-KOWHAI-2025,Needs adviser review,Uses the management-accounts FY2025 value; conflict with accountant summary remains,true
+MET-KOWHAI-EBITDA-GROWTH,DEAL-KOWHAI-001,FIN-KOWHAI-2025,ebitda_growth,14.71,percent,(FY2025 EBITDA - FY2024 EBITDA) / FY2024 EBITDA * 100,FIN-KOWHAI-2024;FIN-KOWHAI-2025,Needs adviser review,FY2025 illustrative,true
+MET-KOWHAI-INTEREST-COVERAGE,DEAL-KOWHAI-001,FIN-KOWHAI-2025,interest_coverage,,multiple,,,"Not calculated","Definition needs lender/adviser confirmation; do not assume one standard formula",true
+MET-KOWHAI-DSCR,DEAL-KOWHAI-001,FIN-KOWHAI-2025,debt_service_coverage_ratio,,multiple,,,"Not calculated","Required scheduled debt service and lender-specific definition are not confirmed",true
+MET-SOUTHERN-GROSS-LEVERAGE,DEAL-SOUTHERN-001,FIN-SOUTHERN-2026,post_transaction_gross_debt_to_EBITDA,2.43,multiple,(existing debt + requested debt) / combined pro-forma EBITDA,FAC-SOUTHERN-001;REQ-SOUTHERN-001;TX-SOUTHERN-001,Needs adviser review,13.1m / 5.4m; this is gross debt leverage,true
+MET-SOUTHERN-NET-LEVERAGE,DEAL-SOUTHERN-001,FIN-SOUTHERN-2026,post_transaction_net_debt_to_EBITDA,,multiple,,,"Not calculated","Unrestricted cash and how transaction proceeds affect cash are not provided",true

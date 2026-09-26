@@ -1,0 +1,9 @@
+provider_id,name,provider_type,description,verified,mandate_source,mandate_as_at,synthetic
+CP-KAURI-CAPITAL,Kauri Capital,Private credit fund,Illustrative senior secured private-credit provider,false,Synthetic product fixture,,true
+CP-HARBOUR-FUNDING,Harbour Funding,Private credit fund,Illustrative flexible-credit provider,false,Synthetic product fixture,,true
+CP-TUI-CREDIT,Tui Credit Partners,Private credit fund,Illustrative asset-backed provider,false,Synthetic product fixture,,true
+CP-ABC-PRIVATE-CREDIT,ABC Private Credit,Private credit fund,Illustrative lender from the Deal Workspace prompt,false,User-provided fictional demo example,,true
+CP-SOUTHERN-CAPITAL,Southern Capital,Private credit fund,Illustrative lender from the Deal Workspace prompt,false,User-provided fictional demo example,,true
+CP-HARBOUR-CREDIT,Harbour Credit,Private credit fund,Illustrative lender from the Deal Workspace prompt,false,User-provided fictional demo example,,true
+CP-PACIFIC-CAPITAL,Pacific Capital,Private credit fund,Illustrative lender from the Deal Workspace prompt,false,User-provided fictional demo example,,true
+CP-KAURI-PRIVATE-CREDIT,Kauri Private Credit,Private credit fund,Illustrative lender from the Deal Workspace prompt,false,User-provided fictional demo example,,true

@@ -485,10 +485,11 @@
       ["Company overview", "kowhai-company-overview.csv"],
       ["Management accounts", "kowhai-management-accounts.csv"],
       ["Accountant summary · includes a discrepancy", "kowhai-accountant-summary.csv"],
-      ["Equipment quote", "kowhai-equipment-quote.csv"]
+      ["Equipment quote", "kowhai-equipment-quote.csv"],
+      ["Funding request", "kowhai-funding-request.csv"]
     ].forEach(function (sample) {
       const link = node("a", "", sample[0]);
-      link.href = "samples/" + sample[1];
+      link.href = "synthetic-data/borrower-documents/" + sample[1];
       link.download = sample[1];
       samples.append(link);
     });

@@ -1,0 +1,8 @@
+evidence_id,deal_id,field_path,proposed_value,currency,period_end,document_name,document_row,confidence,confidence_note,broker_verified,review_status,source_note,synthetic
+EVID-KOWHAI-001,DEAL-KOWHAI-001,company.name,Kowhai Contracting Ltd,,,kowhai-company-overview.csv,2,0.99,Illustrative confidence fixture only,false,needs_review,Synthetic company overview,true
+EVID-KOWHAI-002,DEAL-KOWHAI-001,company.industry,Civil construction,,,kowhai-company-overview.csv,3,0.95,Illustrative confidence fixture only,false,needs_review,Synthetic company overview,true
+EVID-KOWHAI-003,DEAL-KOWHAI-001,funding.amount,950000,NZD,,kowhai-funding-request.csv,2,0.98,Illustrative confidence fixture only,false,needs_review,Synthetic funding request,true
+EVID-KOWHAI-004,DEAL-KOWHAI-001,financials.annualRevenue,2850000,NZD,2025-03-31,kowhai-management-accounts.csv,3,0.98,Illustrative confidence fixture only,false,conflict,Conflicts with accountant summary value 2800000,true
+EVID-KOWHAI-005,DEAL-KOWHAI-001,financials.annualRevenue,2800000,NZD,2025-03-31,kowhai-accountant-summary.csv,3,0.98,Illustrative confidence fixture only,false,conflict,Conflicts with management accounts value 2850000,true
+EVID-KOWHAI-006,DEAL-KOWHAI-001,financials.ebitda,390000,NZD,2025-03-31,kowhai-management-accounts.csv,4,0.94,Illustrative confidence fixture only,false,needs_review,EBITDA figure shared across sample documents,true
+EVID-SOUTHERN-001,DEAL-SOUTHERN-001,financials.ebitda,5400000,NZD,2026-03-31,Fictional acquisition summary,,0.90,Illustrative confidence fixture only,false,needs_review,Combined pro-forma EBITDA; standalone borrower EBITDA is 4300000,true

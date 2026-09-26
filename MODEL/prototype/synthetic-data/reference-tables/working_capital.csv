@@ -1,0 +1,2 @@
+working_capital_id,deal_id,company_id,as_at,currency,accounts_receivable,accounts_payable,inventory,debtor_days,creditor_days,inventory_days,working_capital_requirement,cash_unrestricted,source_document,source_note,synthetic
+WC-KOWHAI-2025,DEAL-KOWHAI-001,CO-KOWHAI-001,2025-03-31,NZD,480000,320000,100000,62,58,24,260000,180000,Fictional FY2025 management accounts,Accounts receivable plus inventory less accounts payable; illustrative,true

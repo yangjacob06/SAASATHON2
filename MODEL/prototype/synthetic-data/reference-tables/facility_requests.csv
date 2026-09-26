@@ -1,0 +1,4 @@
+request_id,deal_id,tranche_name,amount,currency,priority,facility_type,security_type,repayment_structure,interest_preference,term_months,interest_only_months,repayment_amount,exit_strategy,source_note,synthetic
+REQ-KOWHAI-001,DEAL-KOWHAI-001,Equipment finance,650000,NZD,Senior secured,Term loan,New equipment; GSA subject to priority review,Amortising,Unknown,36,0,,Equipment cashflows,Illustrative split of total request; broker to verify,true
+REQ-KOWHAI-002,DEAL-KOWHAI-001,Seasonal working capital,300000,NZD,Senior secured,Revolving working-capital facility,Receivables and GSA subject to priority review,Revolving,Unknown,12,,,"Seasonal collections",Illustrative split of total request; broker to verify,true
+REQ-SOUTHERN-001,DEAL-SOUTHERN-001,Acquisition facility,8000000,NZD,Senior secured,Term loan,GSA and plant and equipment,Not supplied,Unknown,36,,,"Repayment or refinance strategy not supplied",Prompt example; detailed structure remains unknown,true

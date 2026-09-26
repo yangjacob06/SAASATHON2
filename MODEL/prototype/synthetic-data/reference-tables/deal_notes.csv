@@ -1,0 +1,3 @@
+note_id,organisation_id,deal_id,deal_match_id,provider_id,author_user_id,note_text,created_at,synthetic
+NOTE-SOUTHERN-001,ORG-DEMO-001,DEAL-SOUTHERN-001,,,USR-ALEX-001,Confirm target latest management accounts and reconcile them to the sale information memorandum.,2026-09-25T09:10:00+12:00,true
+NOTE-SOUTHERN-002,ORG-DEMO-001,DEAL-SOUTHERN-001,MATCH-SOUTHERN-HARBOUR,CP-HARBOUR-CREDIT,USR-ALEX-001,Provider cited leverage as the reason for declining in this fictional example.,2026-09-26T11:01:00+12:00,true

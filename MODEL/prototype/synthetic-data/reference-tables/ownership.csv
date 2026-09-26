@@ -1,0 +1,4 @@
+ownership_id,company_id,holder_name,holder_type,ownership_pct,role,ultimate_beneficial_owner,source_document,source_note,synthetic
+OWN-KOWHAI-001,CO-KOWHAI-001,Alex Sample,Individual,60,Director and shareholder,Yes,Fictional company overview,Invented demo identity; not a real person,true
+OWN-KOWHAI-002,CO-KOWHAI-001,Jordan Example,Individual,40,Shareholder,Yes,Fictional company overview,Invented demo identity; not a real person,true
+OWN-SOUTHERN-001,CO-SOUTHERN-001,Sample Industrial Holdings Ltd,Company,100,Parent company,Not applicable,Fictional ownership chart,Invented demo entity,true

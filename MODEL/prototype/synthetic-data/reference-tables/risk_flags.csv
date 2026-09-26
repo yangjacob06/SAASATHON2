@@ -1,0 +1,4 @@
+risk_flag_id,deal_id,company_id,flag_type,description,evidence_value,unit,source_document,source_location,review_status,synthetic
+RISK-KOWHAI-001,DEAL-KOWHAI-001,CO-KOWHAI-001,customer_concentration,Top customer is a material share of annual revenue,42,percent,Fictional customer schedule,Row 2,Needs adviser review,true
+RISK-KOWHAI-002,DEAL-KOWHAI-001,CO-KOWHAI-001,revenue_discrepancy,Two documents state different FY2025 revenue values,50000,NZD,Fictional management accounts and accountant summary,Revenue row,Conflict; do not choose automatically,true
+RISK-SOUTHERN-001,DEAL-SOUTHERN-001,CO-SOUTHERN-001,acquisition_timing,Proposed acquisition has a target close date,2026-12-15,date,Fictional acquisition summary,Closing timetable,Needs adviser review,true

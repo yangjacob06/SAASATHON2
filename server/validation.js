@@ -22,3 +22,12 @@ export const mandateSchema=z.object({
  source:z.string().trim().min(1).max(1000),currency:z.literal('NZD'),
  participationMin:money.optional(),participationMax:money.optional(),providerLimit:money.optional(),availableCapital:money.optional(),poolLimit:money.optional(),minDeal:money.optional(),maxDeal:money.optional(),transactionMin:money.optional(),transactionMax:money.optional(),
  coLend:z.boolean().nullable().optional(),exclusive:z.boolean().optional(),canLead:z.boolean().optional(),
+ capacityAsAt:dated,validUntil:dated,deploymentDeadline:dated,availableFrom:dated,
+ sectors:categories,excludedSectors:categories,countries:categories,regions:categories,purposes:categories,facilityTypes:categories,security:categories,
+ minTerm:z.number().int().positive().nullable().optional(),maxTerm:z.number().int().positive().nullable().optional(),minEbitda:z.number().finite().nullable().optional(),maxLeverage:z.number().finite().nonnegative().nullable().optional(),
+ leverageType:optionalText,securityGroup:optionalText,poolId:optionalText,appetite:optionalText,
+ amountScope:z.enum(['facility','participation','unknown']).optional()
+}).passthrough().superRefine((m,ctx)=>{
+ for(const [min,max] of [['participationMin','participationMax'],['minDeal','maxDeal'],['transactionMin','transactionMax'],['minTerm','maxTerm']])if(m[min]!=null&&m[max]!=null&&m[min]>m[max])ctx.addIssue({code:'custom',path:[min],message:'Minimum cannot exceed maximum'});
+ if(m.availableFrom&&m.deploymentDeadline&&new Date(m.availableFrom)>new Date(m.deploymentDeadline))ctx.addIssue({code:'custom',path:['availableFrom'],message:'Availability must precede the deployment deadline'});
+});

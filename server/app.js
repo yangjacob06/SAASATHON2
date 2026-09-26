@@ -51,4 +51,8 @@ export function createApp(db,{authMode=process.env.AUTH_MODE||'demo',origin=proc
  app.get('/api/reports/:id.pdf',async(req,res)=>{const r=await db.tenant(req.user,async tx=>(await tx.query('SELECT * FROM reports WHERE id=$1',[req.params.id])).rows[0]);if(!r)fail('Report not found.',404);const pdf=providerReportPDF(r),filename=`mandate-${r.audience}-provider-report.pdf`;res.set({'Content-Type':'application/pdf','Content-Disposition':`attachment; filename="${filename}"`,'Content-Length':pdf.length}).send(pdf);});
  app.get('/api/reports/:id',async(req,res)=>{const r=await db.tenant(req.user,async tx=>(await tx.query('SELECT * FROM reports WHERE id=$1',[req.params.id])).rows[0]);if(!r)fail('Report not found.',404);res.json(r);});
  app.use('/api',(req,res)=>res.status(404).json({error:'Not found.'}));
- 
+ app.use('/prototype',express.static(path.join(root,'MODEL/prototype'),{dotfiles:'deny'}));
+ app.use(express.static(path.join(root,'MODEL/workspace'),{dotfiles:'deny'}));
+ app.use((error,req,res,next)=>{const status=error.status||(['23503','23514','23505','42501'].includes(error.code)?422:500);if(status===500)console.error('Request failed:',error.code||error.name);res.status(status).json({error:status===500?'Unable to save this change. Please retry.':error.message});});
+ return app;
+}

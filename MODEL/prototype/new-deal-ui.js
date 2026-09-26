@@ -41,7 +41,7 @@
         <section class="detail-card intake-card">
           <div class="detail-card-title"><h2>Funding request</h2></div>
           <div class="intake-grid">
-            <label class="intake-field"><span>Amount requested (NZD) *</span><input name="amount" type="number" min="1" step="1000" required inputmode="decimal" placeholder="750000"></label>
+            <label class="intake-field"><span>Amount requested (NZD) *</span><input name="amount" type="number" min="1" step="1" required inputmode="decimal" placeholder="750000"></label>
             <label class="intake-field"><span>Purpose *</span><input name="purpose" autocomplete="off" required maxlength="180" placeholder="e.g. Equipment purchase"></label>
             <label class="intake-field"><span>Term requested (months)</span><input name="termMonths" type="number" min="1" max="600" step="1" inputmode="numeric" placeholder="36"></label>
             <label class="intake-field"><span>Preferred timing</span><input name="preferredTiming" autocomplete="off" maxlength="100" placeholder="e.g. Within 8 weeks"></label>

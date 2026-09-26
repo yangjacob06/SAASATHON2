@@ -35,7 +35,15 @@
     paragraph('Request: '+money(data.amount)+' | Term: '+(P.value(data.deal,'funding.termMonths')||'Not confirmed')+' months');
     paragraph('Revenue: '+money(data.revenue)+' | EBITDA: '+money(data.ebitda));
     paragraph('EBITDA margin: '+(data.margin==null?'Not available':data.margin.toFixed(1)+'%')+' (EBITDA / revenue)');
-    heading('Executive summary');paragraph(data.summary);
+    heading('Executive summary');
+    for (const block of data.summary.split(/\n\n+/)) {
+      const lines = block.split('\n');
+      if (['Financial commentary', 'Repayment considerations', 'Potential strengths', 'Risks to review', 'Missing information'].includes(lines[0])) {
+        heading(lines.shift());
+      }
+      lines.forEach(value => paragraph(value.replace(/^• /, '- ')));
+    }
+    paragraph(global.MandateAI?.provenance(data.deal) || 'Local template with adviser review.', {size:9});
     heading('Funding request');paragraph(P.value(data.deal,'funding.purpose')||'Purpose needs review');
     paragraph('Proposed security: '+((P.value(data.deal,'funding.security')||[]).join(', ')||'Not confirmed'));
     paragraph('Standalone borrower earnings are shown. Acquisition target financials and combined pro forma earnings are excluded.',{size:10});

@@ -29,4 +29,4 @@ Sources: [Companies Register search guide](https://companies-register.companieso
 
 ## Leverage definition to resolve
 
-The supplied prompt defines leverage as net debt divided by EBITDA, with net debt equal to total debt less unrestricted cash. Its Southern Manufacturing e
+The supplied prompt defines leverage as net debt divided by EBITDA, with net debt equal to total debt less unrestricted cash. Its Southern Manufacturing example calculates NZ$13.1m divided by NZ$5.4m as 2.43x; that is gross post-transaction debt divided by EBITDA, not net leverage. The fixture labels it post_transaction_gross_debt_ebitda. Net leverage is blank where cash is unknown. Do not combine these under one ambiguous leverage label.

@@ -5,11 +5,10 @@
  * deliberately experimental. Everything past the opening CTA is the product
  * world: clear, structured, conversion-shaped.
  *
- * `SOFTWARE_URL` is the ONE place the boundary between them is named. It is
- * currently the in-repo platform page; point it at an external product URL
- * and every entry point on the site follows, with no other edits.
+ * `SOFTWARE_URL` is the boundary between the marketing site and Ollie's
+ * separately hosted interactive software demo.
  */
-export const SOFTWARE_URL = "/platform";
+export const SOFTWARE_URL = "https://mandate-ollie-software.vercel.app/";
 
 /** True when the platform lives outside this app, so links open accordingly. */
 export const SOFTWARE_IS_EXTERNAL = /^https?:\/\//.test(SOFTWARE_URL);

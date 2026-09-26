@@ -1,0 +1,8 @@
+field,value,currency,period_end
+company.name,Southern Manufacturing Demo Ltd,,
+company.industry,Manufacturing,,
+company.location,"Christchurch, New Zealand",,
+funding.amount,8000000,NZD,
+funding.purpose,Acquisition of an industrial components competitor,,
+funding.termMonths,36,,
+funding.security,GSA;plant and equipment,,

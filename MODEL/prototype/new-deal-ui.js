@@ -27,7 +27,7 @@
     document.getElementById("crumbTitle").textContent = "New deal";
     content.innerHTML = `
       <div class="page-title intake-page-title">
-        <div><h1>New deal</h1><p>Start a fictional draft. You can review details before sharing anything.</p></div>
+        <div><h1>New deal</h1><p>Enter what you know. Next, upload the CSVs and check the extracted information.</p></div>
       </div>
       <form id="newDealForm" class="intake-form" novalidate>
         <section class="detail-card intake-card">
@@ -57,11 +57,10 @@
         </section>
         <p class="intake-session-note">Drafts, uploaded synthetic CSVs, and summary reviews stay in this browser session and clear when you refresh.</p>
         <div class="intake-example-section">
-          <p>Quick examples for exploring criteria results</p>
+          <p>Start with a pitch example</p>
           <div class="intake-example-actions">
-            <button class="button-outline" type="button" id="fillDealExample">Fill fictional example</button>
-            <button class="button-outline" type="button" id="fillBoundaryExample">Try minimum-boundary case</button>
-            <button class="button-outline" type="button" id="fillMissingExample">Try missing-info case</button>
+            <button class="button-outline" type="button" id="fillSouthernExample">Fill Southern Manufacturing · pitch example</button>
+            <button class="button-outline" type="button" id="fillDealExample">Fill Kowhai example</button>
           </div>
         </div>
         <div class="intake-actions"><button class="button-outline" type="button" id="cancelNewDeal">Cancel</button><button class="button button-dark" type="submit">Save draft <span>↗</span></button></div>
@@ -83,7 +82,9 @@
       revenue: "2850000",
       ebitda: "390000"
     };
-    if (variant === "boundary") {
+    if (variant === "southern") {
+      Object.assign(sample, {companyName:"Southern Manufacturing Demo Ltd",industry:"Manufacturing",location:"Christchurch, New Zealand",amount:"8000000",purpose:"Acquisition of an industrial components competitor",termMonths:"36",preferredTiming:"December 2026",security:"GSA, plant and equipment",revenue:"",ebitda:""});
+    } else if (variant === "boundary") {
       sample.amount = "1000000";
       sample.purpose = "Equipment purchase";
       sample.termMonths = "12";
@@ -156,7 +157,7 @@
       },
       documents: documents,
       review: { confirmedFields: ["company.name", "funding.amount", "funding.purpose"], conflicts: [] },
-      workflow: { stage: "draft", nextSteps: [], activity: [] },
+      workflow: { stage: "draft", nextSteps: [], activity: [{ title: "Draft deal created", detail: "Created in this browser session.", createdAt: now }] },
       summary: { text: "", method: "local_template", status: "not_started", generatedAt: null, reviewedAt: null, basedOnUpdatedAt: null }
     };
 
@@ -271,6 +272,8 @@
     return baseOpenDeal(id);
   };
 
+  global.MandateStartPitch=function(){renderForm();fillExample("southern");};
+
   document.addEventListener("click", function (event) {
     const target = event.target instanceof Element ? event.target : null;
     if (!target) return;
@@ -283,6 +286,11 @@
     if (target.closest("#fillDealExample")) {
       event.preventDefault();
       fillExample("standard");
+      return;
+    }
+    if (target.closest("#fillSouthernExample")) {
+      event.preventDefault();
+      fillExample("southern");
       return;
     }
     if (target.closest("#fillBoundaryExample")) {

@@ -1,4 +1,4 @@
-> **Implemented API and preserved draft.** The implemented persistent API is documented in [WORKSPACE_API.md](../../docs/WORKSPACE_API.md). The `/api/v1/deals/analyze` proposal below remains an unimplemented partner-integration draft. Existing browser adapter contracts are preserved. Do not implement a client against this draft without reconciling it with the actual workspace routes.
+> **Implemented APIs and preserved draft.** The persistent workspace API is documented in [WORKSPACE_API.md](../../docs/WORKSPACE_API.md). The pitch demo's separate `/api/analyze` function accepts reviewed JSON facts and returns an OpenAI draft; see [live demo setup](../../docs/LIVE_DEMO_API.md) and `api/analyze.js`. The `/api/v1/deals/analyze` multipart proposal below remains unimplemented. Do not implement a client against this historical draft without reconciling the actual routes.
 
 # Mandate analysis API contract — pre-implementation draft
 

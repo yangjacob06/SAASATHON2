@@ -1,0 +1,5 @@
+period_id,company_id,period_start,period_end,period_type,currency,revenue,gross_profit,ebitda,ebit,net_profit_after_tax,operating_expenses,interest_expense,depreciation_amortisation,tax_expense,cash_flow_from_operations,cash,total_assets,total_liabilities,shareholders_equity,gst_basis,source_document,source_note,broker_verified,synthetic
+FIN-SOUTHERN-2024,CO-SOUTHERN-001,2023-04-01,2024-03-31,historical_actual,NZD,27000000,10000000,3500000,2900000,1670000,6500000,650000,600000,580000,2400000,,,,,exclusive,FY2024 fictional financial statements,Illustrative borrower-only figures,false,true
+FIN-SOUTHERN-2025,CO-SOUTHERN-001,2024-04-01,2025-03-31,historical_actual,NZD,30000000,11200000,3900000,3200000,1800000,7300000,800000,700000,600000,3100000,,,,,exclusive,FY2025 fictional financial statements,Illustrative borrower-only figures,false,true
+FIN-SOUTHERN-2026,CO-SOUTHERN-001,2025-04-01,2026-03-31,historical_actual,NZD,33000000,12400000,4300000,3500000,1930000,8100000,900000,800000,670000,3500000,,,,,exclusive,FY2026 fictional financial statements,Standalone borrower figures; target values are in transaction_details.csv,false,true
+

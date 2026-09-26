@@ -20,7 +20,7 @@ export function Pricing() {
         <header className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">
             <p data-reveal="fade" className="eyebrow">
-              Straightforward subscription
+              Proposed demo pricing
             </p>
             <h2 data-reveal className="headline mt-4 text-(length:--text-h2) text-graphite">
               More time for <span className="accent">the right work.</span>
@@ -30,15 +30,15 @@ export function Pricing() {
               style={{ "--reveal-delay": "80ms" } as React.CSSProperties}
               className="lede mt-5 max-w-sm"
             >
-              Start on the essentials and move to Pro when your pipeline asks for more room. Every
-              plan opens with a 14-day free trial, and no card is needed to begin.
+              Start with the essentials, then move to Pro as your deal pipeline grows.
+                            Every plan includes a 14-day trial; no card is needed to start.
             </p>
             <p
               data-reveal="fade"
               style={{ "--reveal-delay": "140ms" } as React.CSSProperties}
               className="mt-6 text-[13px] text-grey"
             >
-              Prices in New Zealand dollars, excluding GST. Cancel at any time from your settings.
+                            NZ dollars per adviser per month, excluding GST. Modelled on overseas CRM tiers; validate with NZ advisers.
             </p>
           </div>
         </header>
@@ -76,7 +76,7 @@ export function Pricing() {
                   <span className="nums font-display text-[3rem] leading-none">
                     NZ${(plan.priceCents / 100).toFixed(0)}
                   </span>
-                  <span className={`text-[13px] ${pro ? "text-paper/75" : "text-grey"}`}>/ month</span>
+                                    <span className={`text-[13px] ${pro ? "text-paper/75" : "text-grey"}`}>/ adviser / month</span>
                 </p>
                 <p className={`mt-3 text-[14px] leading-relaxed ${pro ? "text-paper/75" : "text-grey"}`}>
                   {plan.blurb}

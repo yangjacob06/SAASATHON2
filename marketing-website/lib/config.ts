@@ -13,10 +13,12 @@ export const SOFTWARE_URL = "https://mandate-ollie-software.vercel.app/";
 /** True when the platform lives outside this app, so links open accordingly. */
 export const SOFTWARE_IS_EXTERNAL = /^https?:\/\//.test(SOFTWARE_URL);
 
-/** Anchors inside the platform page, resolved against wherever it lives. */
+
+/** Anchors for product information on the marketing site. */
 export function softwareAnchor(hash: string): string {
-  return `${SOFTWARE_URL}#${hash}`;
+  return `/platform#${hash}`;
 }
+
 
 /** The word the brand uses for crossing from the opening into the product. */
 export const ENTER_LABEL = "Enter the platform";

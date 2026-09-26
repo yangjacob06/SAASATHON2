@@ -209,6 +209,7 @@
     deal.review.resolutions = deal.review.resolutions || [];
     deal.review.resolutions.push({ field: field, chosenValue: value, sourceIds: candidate.sourceIds.slice(), resolvedAt: new Date().toISOString(), priorConflict: previousConflict || null });
     deal.updatedAt = new Date().toISOString();
+    if (global.MandateRecordActivity) global.MandateRecordActivity("Deal information confirmed", deal.id, fieldLabel(field));
     global.renderDeal();
     global.notify("" + fieldLabel(field) + " confirmed for review");
   }
@@ -416,6 +417,7 @@
       }
       await new Promise(function (resolve) { global.setTimeout(resolve, 450); });
       parsed.forEach(function (item) { addUploadedDocument(deal, item.file.name, item.facts); });
+      if (global.MandateRecordActivity) global.MandateRecordActivity("Synthetic documents added", deal.id, parsed.length + " file" + (parsed.length === 1 ? "" : "s"));
       global.renderDeal();
       showMessage("Read " + parsed.length + " file" + (parsed.length === 1 ? "" : "s") + " locally. Review each extracted value and source below.", "success");
     } catch (error) {

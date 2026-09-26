@@ -172,7 +172,7 @@ Store lender examples independently so the same criteria can be compared with mu
 }
 ```
 
-Comparison output should preserve its reason and inputs, for example: lender ID, criteria ID, deal field/value, outcome (`matches`, `outside_criteria`, `needs_check`), and a plain-language explanation. Missing or conflicting input produces `needs_check`, not a match by assumption.
+Comparison output should preserve its reason and inputs, for example: lender ID, criteria ID, deal field/value, outcome (`matches`, `outside_criteria`, `needs_check`), and a plain-language explanation. Where purpose or security matches, include the specific recorded preference that matched. Missing or conflicting input produces `needs_check`, not a match by assumption.
 
 ## Local prototype and future service boundary
 
@@ -203,9 +203,9 @@ Acceptance: a visitor can create a fictional deal with required fields, see vali
 
 The analysis layer is in `synthetic-data.js` and `deal-analysis.js`. These files provide three fictional normalized deal records, synthetic document metadata and sample extracted values, three separate fictional lender criteria profiles, a deterministic draft-summary function, and explainable per-criterion comparisons. `index.html` loads the data and analysis before `app.js` and loads `analysis-ui.js` afterwards to connect the outputs to the existing deal detail and lender criteria screens. `document-upload-ui.js` adds the local CSV reader and source review for new deals.
 
-The browser handoff is `window.MandateDealAnalysis.analyzeDeal(deal, lenders)`. It returns `{ dealId, synthetic, summary, lenderComparisons, disclaimer }`. `summary` includes `text`, `status`, `method`, `missingFields`, `missingDocuments`, `conflicts`, `reviewItems`, and an adviser-review flag. Each lender comparison includes the lender identity, an overall illustrative overlap label, outcome counts, criterion checks with the compared value and explanation, and a plain-language explanation. For a bundled scenario, call `window.MandateDealAnalysis.analyzeSyntheticDeal("demo-northstar-civil")`; `window.MandateSyntheticData.getDeal(id)` and `.getLenders()` return fresh copies of sample inputs.
+The browser handoff is `window.MandateDealAnalysis.analyzeDeal(deal, lenders)`. It returns `{ dealId, synthetic, summary, lenderComparisons, disclaimer }`. `summary` includes `text`, `status`, `method`, `missingFields`, `missingDocuments`, `conflicts`, `reviewItems`, and an adviser-review flag. Each lender comparison includes the lender identity, an overall illustrative overlap label, outcome counts, criterion checks with the compared value, explanation, and specific matched purpose/security preference where applicable, plus a plain-language explanation. For a bundled scenario, call `window.MandateDealAnalysis.analyzeSyntheticDeal("demo-northstar-civil")`; `window.MandateSyntheticData.getDeal(id)` and `.getLenders()` return fresh copies of sample inputs.
 
-Current overall labels are `several_criteria_align`, `possible_criteria_overlap`, `some_criteria_overlap_gaps_to_check`, `needs_check`, and `no_recorded_criteria_overlap`. Individual criteria use `matches`, `outside_criteria`, or `needs_check`. `analysis-ui.js` maps the three existing sample deal IDs to the normalized scenarios, then presents the returned summary and checks in the existing UI. The comparisons are simple rules over fictional criteria. The summary is a local template, not a model-generated result. Bundled sample records are metadata and extracted-value examples; uploaded CSV files are read locally in the browser only.
+Current overall labels are `several_criteria_align`, `possible_criteria_overlap`, `some_criteria_overlap_gaps_to_check`, `needs_check`, and `no_recorded_criteria_overlap`. Individual criteria use `matches`, `outside_criteria`, or `needs_check`. `analysis-ui.js` maps the three existing sample deal IDs to the normalized scenarios, then presents the returned summary and checks in the existing UI. The comparisons are simple rules over fictional criteria. The summary is a local template, not a model-generated result. Bundled sample records are metadata and extracted-value examples; uploaded CSV files are read locally in the browser only. The criteria comparison milestone adds boundary and missing-information presets to the new-deal form for review.
 
 ### Milestone 2: synthetic documents and source-aware review
 
@@ -221,11 +221,19 @@ Generate a local template draft from structured fields, allow editing and explic
 
 Acceptance: the summary reflects the saved deal, can be edited and marked reviewed, is visibly a draft before review, and returns to needs-review when source fields change.
 
+**Implementation status:** Implemented in `analysis-ui.js`. Opening a deal produces a deterministic local draft. The adviser can edit and save it, regenerate it from the current structured details, or mark it as reviewed. The deal's summary state records its method, generated/reviewed timestamps, review status, and the deal timestamp it was based on. When the deal changes, a previously reviewed summary returns to `needs_review`; a clear “Refresh, then review” action regenerates the current template, after which the adviser can check the wording and mark it reviewed. Editing and saving remains available. Missing information and unresolved conflicts remain visible beside the summary. Summary changes are session-only and do not call an API or model.
+
+Acceptance: **Met for the local session flow.**
+
 ### Milestone 4: explainable fictional criteria comparison
 
-The initial rules, separate fictional criteria records, and display of comparison results are implemented in `synthetic-data.js`, `deal-analysis.js`, and `analysis-ui.js`. Add at least one boundary or missing-data scenario so all result states can be demonstrated. Keep match/gap/needs-check results tied to the compared values and reasons.
+The initial rules, separate fictional criteria records, and display of comparison results are implemented in `synthetic-data.js`, `deal-analysis.js`, and `analysis-ui.js`. Keep match/gap/needs-check results tied to the compared values and reasons.
 
 Acceptance: each result can be traced to a named fictional criterion and the current deal value. Missing or conflicting values require checking. Every criteria screen says the comparison is illustrative and no lender is contacted.
+
+**Implementation status:** Implemented for the local synthetic flow. The standard Kowhai example (NZ$950,000 request) demonstrates an outside-range result against Kauri's NZ$1,000,000 minimum, alongside matching purpose, security, and term checks. The New deal form also has a minimum-boundary preset (NZ$1,000,000 request and 12-month term) and a missing-information preset (term and security omitted) so inclusive range boundaries and `needs_check` results are easy to demonstrate. The missing-information preset uses a separate fictional company, Matai Plant Hire Ltd, so it is distinguishable from the Kowhai sample. Boundary explanations explicitly say when a value is exactly at an inclusive minimum or maximum. Purpose and security explanations identify the specific recorded preference that matched. No lender ranking, credit decision, or offer is produced.
+
+Acceptance: **Met for the local criteria fields and example scenarios.**
 
 ### Milestone 5: coherent workflow and presentation review
 
@@ -233,9 +241,13 @@ Connect next steps, activity, and named workflow stages across overview, list, a
 
 Acceptance: a visitor can complete the fictional end-to-end demonstration without dead-end controls or contradictory statuses, and the team can explain what is simulated and what is manual.
 
+**Implementation status:** Implemented in `workflow-ui.js`, `analysis-ui.js`, `document-upload-ui.js`, `new-deal-ui.js`, `app.js`, and `layout.css`. The prototype now uses named local stages (Draft, Adviser review, Ready to send, Sent to lender, More information needed, and Outcome recorded) across deal detail, overview, and the deal list. The overview derives its deal count, suggested next steps, activity, and illustrative criteria-overlap count from current session data. Deal filters, lender filters, detail editing, stage updates, and adviser notes have working local interactions. Document, source-confirmation, summary, detail-edit, note, and stage actions appear in the activity feed. Mobile overview cards are visible at phone widths, and new workflow controls have light and dark styling. Reset restores the original sample stages and clears session-created deals, uploads, edits, summary state, and activity. All stage labels and notes clarify that the demo does not contact lenders or record an actual lending decision.
+
+This milestone remains a browser-only prototype. Stage transitions are adviser-entered notes, activity is session-only, document uploads are synthetic CSV data, and the responsive/light-dark presentation still needs a manual visual pass in a browser before pitch use. **Code-level checks passed; visual browser review remains for the team.**
+
 ### Later: API and model exploration
 
-Only after the local flow and review structure are understood, define a backend contract for document intake and proposed extracted fields. Add authentication, authorization, safe file handling, data retention rules, server-side secrets, request validation, error handling, and audit history before using real borrower data. Keep a deterministic local fallback for demos. Never make the model responsible for lender selection, credit decisions, offers, or sending lender communications.
+The pre-implementation endpoint, request/response example, validation rules, and adviser-review boundary are drafted in [api-contract.md](api-contract.md). The current local `MandateDealAnalysis.analyzeDeal()` shape is the baseline for the summary and lender-comparison response. Stable lender IDs, criteria versions, and the `lenderComparisons` shape are documented for later integration with the funder-matching work. The first endpoint should accept synthetic files only, run without persistence, validate responses, and preserve the local deterministic fallback. Never put an API key in browser code. Design authentication, authorization, safe file handling, retention and deletion, server-side secrets, and audit history before considering real borrower data. Never make the model responsible for credit decisions, offers, or sending lender communications.
 
 ## Team coordination and review
 
@@ -272,4 +284,6 @@ Until those questions are validated, treat the data fields, document types, crit
 - [New deal intake](new-deal-ui.js)
 - [Prototype base styles](styles.css)
 - [Prototype layout overrides](layout.css)
+- [Local workflow and activity interactions](workflow-ui.js)
+- [Pre-implementation API contract](api-contract.md)
 - [Adviser interview guide](../../RESEARCH/interview_questions.md)

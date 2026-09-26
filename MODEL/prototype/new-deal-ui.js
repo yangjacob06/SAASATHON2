@@ -55,13 +55,21 @@
             <label class="intake-field"><span>EBITDA (NZD)</span><input name="ebitda" type="number" min="0" step="1000" inputmode="decimal" placeholder="Not provided"></label>
           </div>
         </section>
-        <p class="intake-session-note">Drafts stay in this browser session and clear when you refresh. Synthetic document upload is the next prototype step.</p>
-        <div class="intake-actions"><button class="button-outline" type="button" id="cancelNewDeal">Cancel</button><button class="button-outline" type="button" id="fillDealExample">Fill fictional example</button><button class="button button-dark" type="submit">Save draft <span>↗</span></button></div>
+        <p class="intake-session-note">Drafts, uploaded synthetic CSVs, and summary reviews stay in this browser session and clear when you refresh.</p>
+        <div class="intake-example-section">
+          <p>Quick examples for exploring criteria results</p>
+          <div class="intake-example-actions">
+            <button class="button-outline" type="button" id="fillDealExample">Fill fictional example</button>
+            <button class="button-outline" type="button" id="fillBoundaryExample">Try minimum-boundary case</button>
+            <button class="button-outline" type="button" id="fillMissingExample">Try missing-info case</button>
+          </div>
+        </div>
+        <div class="intake-actions"><button class="button-outline" type="button" id="cancelNewDeal">Cancel</button><button class="button button-dark" type="submit">Save draft <span>↗</span></button></div>
       </form>`;
     content.querySelector("[name=companyName]").focus();
   }
 
-  function fillExample() {
+  function fillExample(variant) {
     const form = document.getElementById("newDealForm");
     const sample = {
       companyName: "Kowhai Contracting Ltd",
@@ -75,6 +83,21 @@
       revenue: "2850000",
       ebitda: "390000"
     };
+    if (variant === "boundary") {
+      sample.amount = "1000000";
+      sample.purpose = "Equipment purchase";
+      sample.termMonths = "12";
+    } else if (variant === "missing") {
+      sample.companyName = "Matai Plant Hire Ltd";
+      sample.industry = "Equipment hire";
+      sample.location = "Hamilton, New Zealand";
+      sample.amount = "1200000";
+      sample.purpose = "Equipment purchase";
+      sample.termMonths = "";
+      sample.security = "";
+      sample.revenue = "4200000";
+      sample.ebitda = "560000";
+    }
     Object.keys(sample).forEach(function (name) { form.elements[name].value = sample[name]; });
   }
 
@@ -259,7 +282,17 @@
     }
     if (target.closest("#fillDealExample")) {
       event.preventDefault();
-      fillExample();
+      fillExample("standard");
+      return;
+    }
+    if (target.closest("#fillBoundaryExample")) {
+      event.preventDefault();
+      fillExample("boundary");
+      return;
+    }
+    if (target.closest("#fillMissingExample")) {
+      event.preventDefault();
+      fillExample("missing");
       return;
     }
     if (target.closest("#cancelNewDeal")) {
@@ -272,6 +305,10 @@
       event.stopImmediatePropagation();
       createdIds.forEach(function (id) { delete deals[id]; delete global.MandateCreatedDeals[id]; });
       createdIds.length = 0;
+      global.MandateWorkingDeals = {};
+      global.MandateUploadState = {};
+      global.MandateSummaryReviewRecords = {};
+      if (global.MandateResetWorkflow) global.MandateResetWorkflow();
       Object.keys(initialStages).forEach(function (id) { deals[id].stage = initialStages[id]; });
       activityItems = JSON.parse(JSON.stringify(initialActivity));
       summaryReady = true;

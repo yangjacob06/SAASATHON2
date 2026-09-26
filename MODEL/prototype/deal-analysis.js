@@ -127,13 +127,18 @@
     }
     const inRange = value >= range.minimum && value <= range.maximum;
     const rangeText = formatMoney(range.minimum, "NZD") + "–" + formatMoney(range.maximum, "NZD");
+    const boundaryText = value === range.minimum
+      ? " It is exactly at the inclusive minimum."
+      : value === range.maximum
+        ? " It is exactly at the inclusive maximum."
+        : "";
     return {
       criterion: label,
       outcome: inRange ? "matches" : "outside_criteria",
       dealValue: value,
       recordedCriteria: { currency: "NZD", minimum: range.minimum, maximum: range.maximum },
       explanation: inRange
-        ? (formattedValue || formatMoney(value, "NZD")) + " is within the recorded " + rangeText + " range."
+        ? (formattedValue || formatMoney(value, "NZD")) + " is within the recorded " + rangeText + " range." + boundaryText
         : (formattedValue || formatMoney(value, "NZD")) + " is outside the recorded " + rangeText + " range."
     };
   }
@@ -145,13 +150,18 @@
         explanation: "The requested term or recorded term range is missing." };
     }
     const inRange = value >= range.minimum && value <= range.maximum;
+    const boundaryText = value === range.minimum
+      ? " It is exactly at the inclusive minimum."
+      : value === range.maximum
+        ? " It is exactly at the inclusive maximum."
+        : "";
     return {
       criterion: "termMonths",
       outcome: inRange ? "matches" : "outside_criteria",
       dealValue: value,
       recordedCriteria: { minimum: range.minimum, maximum: range.maximum },
       explanation: inRange
-        ? value + " months is within the recorded " + range.minimum + "–" + range.maximum + " month range."
+        ? value + " months is within the recorded " + range.minimum + "–" + range.maximum + " month range." + boundaryText
         : value + " months is outside the recorded " + range.minimum + "–" + range.maximum + " month range."
     };
   }
@@ -163,17 +173,19 @@
         explanation: "The deal purpose or recorded purpose criteria are missing." };
     }
     const dealPurpose = normalize(value);
-    const matches = accepted.some(function (purpose) {
+    const matchedCriteria = accepted.filter(function (purpose) {
       const criterionPurpose = normalize(purpose);
       return dealPurpose === criterionPurpose || dealPurpose.includes(criterionPurpose) || criterionPurpose.includes(dealPurpose);
     });
+    const matches = matchedCriteria.length > 0;
     return {
       criterion: "purpose",
       outcome: matches ? "matches" : "outside_criteria",
       dealValue: value,
       recordedCriteria: accepted.slice(),
+      matchedCriteria: matchedCriteria,
       explanation: matches
-        ? "The stated purpose overlaps with a recorded purpose preference."
+        ? "The stated purpose overlaps with this recorded preference: " + matchedCriteria.join("; ") + "."
         : "The stated purpose does not match the recorded purpose preferences."
     };
   }
@@ -185,19 +197,21 @@
         explanation: "The proposed security or recorded security preferences are missing." };
     }
     const dealSecurity = values.map(normalize);
-    const matches = accepted.some(function (security) {
+    const matchedCriteria = accepted.filter(function (security) {
       const criterionSecurity = normalize(security);
       return dealSecurity.some(function (item) {
         return item === criterionSecurity || item.includes(criterionSecurity) || criterionSecurity.includes(item);
       });
     });
+    const matches = matchedCriteria.length > 0;
     return {
       criterion: "security",
       outcome: matches ? "matches" : "outside_criteria",
       dealValue: values.slice(),
       recordedCriteria: accepted.slice(),
+      matchedCriteria: matchedCriteria,
       explanation: matches
-        ? "At least one proposed security type overlaps with a recorded preference."
+        ? "Proposed security overlaps with these recorded preferences: " + matchedCriteria.join("; ") + "."
         : "No proposed security type matches the recorded preferences."
     };
   }

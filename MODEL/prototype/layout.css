@@ -69,7 +69,7 @@
   .panel-heading h2{font-size:14px}
   .panel-heading p{font-size:10px}
   .deal-table{min-width:560px}
-  .mobile-deal{display:none}
+  .mobile-deal{display:flex}
   .task-item b{font-size:10px}
   .task-item small{font-size:9px}
   .activity-item b{font-size:10px}
@@ -217,6 +217,10 @@
 .intake-field input:focus{border-color:#78996a;box-shadow:0 0 0 3px #78996a24}
 .intake-field input:invalid:not(:placeholder-shown){border-color:#b7755a}
 .intake-session-note{margin:0;color:#78867a;font-size:10px;line-height:1.55}
+.intake-example-section{display:grid;gap:7px}
+.intake-example-section>p{margin:0;color:#78867a;font-size:9px;font-weight:600}
+.intake-example-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.intake-example-actions button{padding:9px 11px;font-size:9px}
 .intake-actions{display:flex;justify-content:flex-end;align-items:center;gap:9px;padding:1px 0 8px}
 .intake-actions .button{padding:11px 15px;font-size:10px}
 .mobile-deal-dynamic{cursor:pointer}
@@ -225,13 +229,37 @@
 .app-shell[data-theme="dark"] .intake-field input{background:#151e18;border-color:#3a4a3c;color:#e5ece5}
 .app-shell[data-theme="dark"] .intake-field input::placeholder{color:#8c9c8e}
 .app-shell[data-theme="dark"] .intake-session-note{color:#b5c2b5}
+.app-shell[data-theme="dark"] .intake-example-section>p{color:#b5c2b5}
 @media(max-width:650px){
   .intake-card{padding:15px}
   .intake-grid{grid-template-columns:1fr;gap:13px}
   .intake-field-wide{grid-column:auto}
   .intake-actions{justify-content:stretch;flex-wrap:wrap}
   .intake-actions button{flex:1}
+  .intake-example-actions button{flex:1}
   .intake-page-title h1{font-size:22px}
+}
+
+/* Adviser summary drafting and review */
+.summary-review-controls{display:grid;gap:9px;margin-top:11px}
+.summary-state-note,.summary-editor-hint{margin:0;color:#69766c;font-size:9px;line-height:1.5}
+.summary-review-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.summary-review-actions .button,.summary-review-actions .button-outline{font-size:9px;padding:8px 11px}
+.summary-review-actions button:disabled{opacity:.55;cursor:not-allowed}
+.summary-editor-label{display:grid;gap:6px;color:#435347;font-size:10px;font-weight:700}
+.summary-editor{width:100%;min-height:150px;resize:vertical;border:1px solid #dfe6dd;border-radius:6px;background:#fff;padding:10px 11px;color:#344639;font:400 11px/1.6 'DM Sans',Arial,sans-serif;outline:none}
+.summary-editor:focus{border-color:#78996a;box-shadow:0 0 0 3px #78996a24}
+.summary-status-reviewed{background:#e6f1e2;color:#4d7047}
+.summary-status-needs-review{background:#f5f0e1;color:#816b3c}
+.app-shell[data-theme="dark"] .summary-state-note,.app-shell[data-theme="dark"] .summary-editor-hint{color:#afbdaf}
+.app-shell[data-theme="dark"] .summary-editor-label{color:#e0e9df}
+.app-shell[data-theme="dark"] .summary-editor{background:#151e18;border-color:#3a4a3c;color:#e5ece5}
+.app-shell[data-theme="dark"] .summary-status-reviewed{background:#293a2c;color:#cbe1bc}
+.app-shell[data-theme="dark"] .summary-status-needs-review{background:#403923;color:#edda98}
+@media(max-width:650px){
+  .summary-review-actions{justify-content:stretch}
+  .summary-review-actions button{flex:1}
+  .summary-editor{min-height:180px}
 }
 
 /* Synthetic document intake and source review */
@@ -275,8 +303,35 @@
 .app-shell[data-theme="dark"] .document-upload-status-error{background:#392722;color:#e8b8a5}
 .app-shell[data-theme="dark"] .document-upload-status-success{background:#26372a;color:#cbe1bc}
 .app-shell[data-theme="dark"] .document-upload-status-working{background:#393321;color:#edda98}
+
+/* Milestone 5: clear local workflow controls and reviewable activity. */
+.workflow-stage-picker{display:grid;gap:6px;margin-top:8px;color:#718071;font-size:9px;font-weight:600}
+.workflow-stage-select{width:100%;min-height:36px;padding:8px 10px;border:1px solid #dfe6dc;border-radius:6px;background:#fff;color:#405044;font:inherit}
+.workflow-stage-note,.next-step-footnote{margin:8px 0 0;color:#89948a;font-size:8px;line-height:1.5}
+.workflow-edit-form{margin-top:12px;padding:13px;border:1px solid #e8ede5;border-radius:7px;background:#fbfcfa}
+.workflow-edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.workflow-edit-grid .intake-field{min-width:0}
+.workflow-edit-grid input{width:100%;min-width:0}
+.workflow-edit-form .intake-actions{justify-content:flex-end;margin-top:12px}
+.workflow-note-form{margin:0 0 12px;padding:12px;border:1px solid #e8ede5;border-radius:7px;background:#fbfcfa}
+.workflow-note-form .summary-editor{width:100%;box-sizing:border-box}
+.workflow-note-form .summary-review-actions{margin-top:8px}
+.task-arrow{cursor:pointer}
+.task-arrow:hover{color:#52794a}
+.deal-row[role="button"]{cursor:pointer}
+.deal-row[role="button"]:focus-visible{outline:2px solid #78996a;outline-offset:-2px}
+.lender-card[hidden],.full-table tr[hidden]{display:none!important}
+.lender-filter-empty{grid-column:1/-1;margin:0;padding:18px;border:1px dashed #dfe6dc;border-radius:7px;color:#78867a;font-size:10px;text-align:center}
+.app-shell[data-theme="dark"] .workflow-stage-picker{color:#b5c2b5}
+.app-shell[data-theme="dark"] .workflow-stage-select{background:#151e18;border-color:#3a4a3c;color:#e5ece5}
+.app-shell[data-theme="dark"] .workflow-stage-note,.app-shell[data-theme="dark"] .next-step-footnote{color:#a8b7a9}
+.app-shell[data-theme="dark"] .workflow-edit-form,.app-shell[data-theme="dark"] .workflow-note-form{background:#151e18;border-color:#344539}
+.app-shell[data-theme="dark"] .lender-filter-empty{border-color:#455747;color:#a8b7a9}
 @media(max-width:650px){
   .document-drop-zone{padding:13px 10px}
   .extracted-source-row{align-items:flex-start;flex-direction:column}
   .review-value-button{align-self:flex-end}
+  .workflow-edit-grid{grid-template-columns:1fr}
+  .workflow-edit-form .intake-actions{flex-direction:column-reverse}
+  .workflow-edit-form .intake-actions button{width:100%}
 }

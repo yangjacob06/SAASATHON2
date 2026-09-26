@@ -61,11 +61,4 @@ test('expired or withdrawn transaction evidence invalidates proposals and cannot
 test('actual commitments cannot double count the facility and received funding cannot expire',async()=>{
  const w=await svc.workspace(u,dealId),m=w.deal_matches.find(m=>m.provider_id.startsWith('CP-CLUB-'));
  await assert.rejects(()=>mutation('funding',{match_id:m.id,facility_id:'main',kind:'commitment',state:'active',amount:6e6,data:{source:'Duplicate economic capacity'}}),/exceeds this facility/);
- await assert.rejects(()=>mutation('funding',{match_id:m.id,facility_id:'main',kind:'funding',state:'funded',amount:1e6,expires_at:'2027-01-01T00:00:00Z',data:{source:'Received funds'}}),/do not expire/);
-});
-test('malformed mandate criteria are rejected before reaching comparison logic',async()=>{
- for(const data of [{sectors:'Manufacturing'},{participationMin:10,participationMax:5},{maxLeverage:-1},{availableFrom:'not-a-date'}]){
-  const result=await request('/providers/CP-CLUB-1/mandates',{id:randomUUID(),effective_from:new Date().toISOString(),data:{source:'Validation test',currency:'NZD',...data}});
-  assert.equal(result.response.status,422);
- }
-});
+ await assert.rejects(()=>mutation('funding',{match_id:m.id,facility_id:'main',kind:'funding',state:'funded',amoun

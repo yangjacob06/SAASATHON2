@@ -19,8 +19,4 @@ test('multi-page history tables repeat their column headings',()=>{
  const pdf=providerReportPDF(data).toString('ascii');
  assert.ok([...pdf.matchAll(/\(Industry\) Tj ET/g)].length>=2,'continued history table repeats its column headings on the next page');
 });
-test('long report content paginates and changes show as ASCII hyphens',()=>{
- const data=report();data.snapshot.result.checks=Array.from({length:90},(_,i)=>({field:'criterion '+i,value:'A long manufacturing explanation with an unverified condition which the adviser must confirm before sharing terms',requirement:'Dated source and transaction evidence',outcome:'needs_check'}));
- const pdf=providerReportPDF(data).toString('ascii');
- assert.match(pdf,/\/Count (?:[2-9]|[1-9][0-9]+)/);assert.match(pdf,/Page 1 of /);assert.doesNotMatch(pdf,/[\u2010-\u2015\u2212]/);
-});
+test('long report content paginates and changes show as ASCII hyphens',()=

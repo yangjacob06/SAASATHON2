@@ -87,6 +87,7 @@ export async function connect() {
 /** Dropped in this order so foreign keys never block a --force reset. */
 export const TABLES = [
   "application_events",
+  "application_lender_events",
   "application_lenders",
   "lenders",
   "deal_summaries",

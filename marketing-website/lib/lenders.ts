@@ -179,10 +179,17 @@ export async function listApplicationLenders(applicationId: string): Promise<App
   }));
 }
 
-export async function setLenderStage(applicationLenderId: string, stage: LenderStage): Promise<void> {
-  await run(`UPDATE application_lenders SET stage = $1, updated_at = $2 WHERE id = $3`, [
+export async function setLenderStage(applicationLenderId: string, applicationId: string, stage: LenderStage): Promise<void> {
+  const occurredAt = nowIso();
+  await run(`UPDATE application_lenders SET stage = $1, updated_at = $2 WHERE id = $3 AND application_id = $4`, [
     stage,
-    nowIso(),
+    occurredAt,
     applicationLenderId,
+    applicationId,
   ]);
+  await run(
+    `INSERT INTO application_lender_events (id, application_lender_id, event_type, stage, occurred_at)
+     SELECT $1, id, $2, $3, $4 FROM application_lenders WHERE id = $5 AND application_id = $6`,
+    [newId(), stage === "contacted" ? "contacted" : stage === "interested" || stage === "declined" ? "response" : "matched", stage, occurredAt, applicationLenderId, applicationId],
+  );
 }

@@ -57,19 +57,23 @@ export async function createApplicationAction(formData: FormData) {
   const region = String(formData.get("region") || "").trim();
   const suburb = String(formData.get("suburb") || "").trim();
   const location = suburb ? `${suburb}, ${region}` : region;
+  const industry = String(formData.get("industry") || "").trim();
+  const security = formData.getAll("security").map((value) => String(value).trim()).filter(Boolean);
 
   await run(
     `INSERT INTO applications
-       (id, adviser_id, client_name, loan_amount_cents, purpose, location, property_value_cents,
+       (id, adviser_id, client_name, loan_amount_cents, purpose, industry, location, security, property_value_cents,
         pre_sales_pct, loan_term_months, notes, status, is_sample, created_at, updated_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'draft', 0, $11, $11)`,
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'draft', 0, $13, $13)`,
     [
       id,
       user.id,
       clientName,
       parseDollarsToCents(formData.get("loan_amount")),
       String(formData.get("purpose") || "commercial_property") as LoanPurpose,
+      industry,
       location,
+      JSON.stringify(security),
       formData.get("property_value") ? parseDollarsToCents(formData.get("property_value")) : null,
       parsePercent(formData.get("pre_sales_pct")),
       formData.get("loan_term_months") ? Number(formData.get("loan_term_months")) : null,
@@ -94,15 +98,16 @@ export async function createApplicationAction(formData: FormData) {
 
 async function storeDocument(applicationId: string, file: File) {
   const bytes = Buffer.from(await file.arrayBuffer());
-  const path = await saveFile(applicationId, file.name, bytes);
-  const extractedText = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")
-    ? await extractPdfText(bytes)
-    : "";
+  const displayName = file.webkitRelativePath || file.name;
+  const path = await saveFile(applicationId, displayName, bytes);
+  const isCsv = file.name.toLowerCase().endsWith(".csv") || file.type === "text/csv";
+  const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+  const extractedText = isCsv ? bytes.toString("utf8") : isPdf ? await extractPdfText(bytes) : "";
 
   await run(
     `INSERT INTO application_documents (id, application_id, filename, storage_path, mime_type, size_bytes, extracted_text, created_at)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-    [newId(), applicationId, file.name, path, file.type || "application/octet-stream", bytes.length, extractedText || null, nowIso()],
+    [newId(), applicationId, displayName, path, file.type || "application/octet-stream", bytes.length, extractedText || null, nowIso()],
   );
 }
 
@@ -186,7 +191,7 @@ export async function setLenderStageAction(formData: FormData) {
 
   const applicationLenderId = String(formData.get("application_lender_id") || "");
   const stage = String(formData.get("stage") || "matched") as LenderStage;
-  await setLenderStageDb(applicationLenderId, stage);
+  await setLenderStageDb(applicationLenderId, applicationId, stage);
 
   revalidatePath(`/app/applications/${applicationId}`);
 }

@@ -51,9 +51,12 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         </SubmitButton>
       </form>
 
-      <p className="mt-6 rounded-[var(--radius-control)] border border-rule bg-paper-soft px-4 py-3 text-xs text-grey">
-        Demo account: <span className="font-medium text-graphite-soft">demo@mandate.test</span> / demo1234
-      </p>
+      <div className="mt-6 space-y-2 rounded-[var(--radius-control)] border border-rule bg-paper-soft p-4 text-xs text-grey">
+        <p className="font-medium text-graphite-soft">Demo accounts</p>
+        <p>New account — empty dashboard: <span className="font-medium text-graphite-soft">fresh@mandate.test</span> / demo1234</p>
+        <p>Six months of sample history: <span className="font-medium text-graphite-soft">demo@mandate.test</span> / demo1234</p>
+        <p className="pt-1 text-[11px]">All deal and lender records are fictional demonstration data.</p>
+      </div>
     </AuthShell>
   );
 }

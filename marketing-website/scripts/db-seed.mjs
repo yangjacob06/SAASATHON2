@@ -24,6 +24,7 @@ function hashPassword(password) {
 }
 
 const DEMO_EMAIL = "demo@mandate.test";
+const FRESH_EMAIL = "fresh@mandate.test";
 
 const LENDERS = [
   {
@@ -134,35 +135,47 @@ const LENDERS = [
 ];
 
 try {
-  const existing = await db.all(`SELECT id FROM users WHERE email = $1`, [DEMO_EMAIL]);
-  if (existing.length) {
-    console.log("Demo data is already here. Run `npm run db:reset` to rebuild it.");
-    process.exit(0);
+  async function account(email, name, firmName, createdAt) {
+    const existing = await db.all(`SELECT id FROM users WHERE email = $1`, [email]);
+    if (existing[0]) {
+      await db.run(
+        `UPDATE users SET name = $1, password_hash = $2, firm_name = $3,
+                           plan = 'starter', subscription_status = 'active', trial_ends_at = NULL
+         WHERE id = $4`,
+        [name, hashPassword("demo1234"), firmName, existing[0].id],
+      );
+      return existing[0].id;
+    }
+    const userId = id();
+    await db.run(
+      `INSERT INTO users
+         (id, email, name, password_hash, firm_name, plan, subscription_status, trial_ends_at, created_at)
+       VALUES ($1, $2, $3, $4, $5, 'starter', 'active', NULL, $6)`,
+      [userId, email, name, hashPassword("demo1234"), firmName, createdAt],
+    );
+    return userId;
   }
 
-  const userId = id();
-  await db.run(
-    `INSERT INTO users
-       (id, email, name, password_hash, firm_name, plan, subscription_status, trial_ends_at, created_at)
-     VALUES ($1, $2, $3, $4, $5, 'trial', 'trialing', $6, $7)`,
-    [userId, DEMO_EMAIL, "Grace Tauwhare", hashPassword("demo1234"), "Blackwood Finance Partners", daysFromNow(11), daysAgo(19)],
-  );
+  const userId = await account(DEMO_EMAIL, "Grace Tauwhare", "Blackwood Finance Partners", daysAgo(182));
+  await db.run(`UPDATE users SET created_at = $1 WHERE id = $2`, [daysAgo(182), userId]);
+  await account(FRESH_EMAIL, "Alex Morgan", "New Adviser Demo", now());
 
   const lenderIds = {};
   for (const l of LENDERS) {
-    const lid = id();
+    const found = await db.all(`SELECT id FROM lenders WHERE name = $1`, [l.name]);
+    const lid = found[0]?.id ?? id();
     lenderIds[l.name] = lid;
-    await db.run(
-      `INSERT INTO lenders
-         (id, name, min_loan_cents, max_loan_cents, max_lvr_pct, regions, loan_types, pre_sales_requirement, contact_email, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-      [
-        lid, l.name, l.min * 100, l.max * 100, l.lvr,
-        JSON.stringify(l.regions), JSON.stringify(l.types), l.preSales, l.email, l.notes,
-      ],
-    );
+    if (!found[0]) await db.run(
+        `INSERT INTO lenders
+           (id, name, min_loan_cents, max_loan_cents, max_lvr_pct, regions, loan_types, pre_sales_requirement, contact_email, notes)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [
+          lid, l.name, l.min * 100, l.max * 100, l.lvr,
+          JSON.stringify(l.regions), JSON.stringify(l.types), l.preSales, l.email, l.notes,
+        ],
+      );
   }
-  console.log(`  seeded ${LENDERS.length} lenders`);
+  console.log(`  ready: ${LENDERS.length} lenders`);
 
   async function addApplication(app) {
     const appId = id();
@@ -197,17 +210,40 @@ try {
     }
 
     for (const match of app.matches ?? []) {
+      const matchId = id();
+      const isResponse = ["interested", "declined"].includes(match.stage);
+      const matchedAt = daysAgo(match.matchedDaysAgo ?? ((match.daysAgo ?? 1) + (isResponse ? 3 : 1)));
       await db.run(
         `INSERT INTO application_lenders
            (id, application_id, lender_id, match_score, match_reasons, stage, created_at, updated_at)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-        [id(), appId, lenderIds[match.name], match.score, JSON.stringify(match.reasons), match.stage ?? "matched", daysAgo(match.daysAgo ?? 1), daysAgo(match.daysAgo ?? 1)],
+        [matchId, appId, lenderIds[match.name], match.score, JSON.stringify(match.reasons), match.stage ?? "matched", matchedAt, matchedAt],
       );
+      await db.run(
+        `INSERT INTO application_lender_events (id, application_lender_id, event_type, stage, occurred_at)
+         VALUES ($1, $2, 'matched', 'matched', $3)`, [id(), matchId, matchedAt],
+      );
+      if (match.contactedDaysAgo !== undefined || ["contacted", "interested", "declined"].includes(match.stage)) {
+        const contactedAt = daysAgo(match.contactedDaysAgo ?? ((match.daysAgo ?? 1) + (isResponse ? 2 : 0)));
+        await db.run(
+          `INSERT INTO application_lender_events (id, application_lender_id, event_type, stage, occurred_at)
+           VALUES ($1, $2, 'contacted', 'contacted', $3)`, [id(), matchId, contactedAt],
+        );
+      }
+      if (["interested", "declined"].includes(match.stage)) {
+        const respondedAt = daysAgo(match.responseDaysAgo ?? match.daysAgo ?? 1);
+        await db.run(
+          `INSERT INTO application_lender_events (id, application_lender_id, event_type, stage, occurred_at)
+           VALUES ($1, $2, 'response', $3, $4)`, [id(), matchId, match.stage, respondedAt],
+        );
+      }
     }
 
     return appId;
   }
 
+  const alreadySeeded = await db.all(`SELECT id FROM applications WHERE adviser_id = $1 AND is_sample = 1 LIMIT 1`, [userId]);
+  if (!alreadySeeded.length) {
   await addApplication({
     clientName: "Rangiora Terraces Ltd",
     loanAmount: 8_000_000,
@@ -305,7 +341,45 @@ try {
     updatedDaysAgo: 2,
   });
 
-  console.log("Seeded demo adviser demo@mandate.test / demo1234 with 3 sample applications.");
+  }
+
+  const existingHistory = await db.all(`SELECT id FROM applications WHERE adviser_id = $1 AND client_name = $2 LIMIT 1`, [userId, "Kauri Industrial Holdings"]);
+  if (!existingHistory.length) {
+  const history = [
+    { clientName: "Kauri Industrial Holdings", loanAmount: 5_400_000, purpose: "commercial_property", location: "Auckland Central, Auckland", propertyValue: 8_500_000, status: "settled", createdDaysAgo: 176, matches: [
+      { name: "Anchorage Private Debt", score: 91, reasons: ["Auckland commercial property appetite", "Facility within mandate"], stage: "interested", daysAgo: 168, matchedDaysAgo: 176, contactedDaysAgo: 174, responseDaysAgo: 168, responseLagDays: 6 },
+      { name: "Beacon Hill Capital", score: 83, reasons: ["Nationwide commercial appetite", "Facility within mandate"], stage: "declined", daysAgo: 170, matchedDaysAgo: 176, contactedDaysAgo: 174, responseDaysAgo: 170, responseLagDays: 4 },
+    ] },
+    { clientName: "Southern Grain Logistics", loanAmount: 2_750_000, purpose: "business_acquisition", location: "Canterbury", propertyValue: null, status: "settled", createdDaysAgo: 151, matches: [
+      { name: "Merino Private Finance", score: 89, reasons: ["Owner-operator acquisition specialist", "Canterbury coverage"], stage: "interested", daysAgo: 147, matchedDaysAgo: 151, contactedDaysAgo: 150, responseDaysAgo: 147, responseLagDays: 3 },
+      { name: "Fernridge Capital", score: 82, reasons: ["Canterbury business acquisition appetite"], stage: "declined", daysAgo: 145, matchedDaysAgo: 151, contactedDaysAgo: 150, responseDaysAgo: 145, responseLagDays: 5 },
+    ] },
+    { clientName: "Harbour Road Offices Ltd", loanAmount: 7_200_000, purpose: "refinance", location: "Wellington", propertyValue: 11_000_000, status: "declined", createdDaysAgo: 126, matches: [
+      { name: "Tussock Lending", score: 88, reasons: ["Commercial refinance experience", "Facility within mandate"], stage: "interested", daysAgo: 120, matchedDaysAgo: 126, contactedDaysAgo: 124, responseDaysAgo: 120, responseLagDays: 4 },
+      { name: "Quay Street Capital", score: 80, reasons: ["Wellington coverage", "Commercial property appetite"], stage: "declined", daysAgo: 121, matchedDaysAgo: 126, contactedDaysAgo: 124, responseDaysAgo: 121, responseLagDays: 3 },
+    ] },
+    { clientName: "Te Awa Manufacturing Group", loanAmount: 9_600_000, purpose: "business_acquisition", location: "Hamilton, Waikato", propertyValue: null, status: "settled", createdDaysAgo: 101, matches: [
+      { name: "Northline Private Credit", score: 90, reasons: ["Waikato coverage", "Acquisition mandate"], stage: "interested", daysAgo: 96, matchedDaysAgo: 101, contactedDaysAgo: 99, responseDaysAgo: 96, responseLagDays: 3 },
+      { name: "Ironbridge Credit", score: 78, reasons: ["Larger facility appetite", "Acquisition mandate"], stage: "declined", daysAgo: 95, matchedDaysAgo: 101, contactedDaysAgo: 99, responseDaysAgo: 95, responseLagDays: 4 },
+    ] },
+    { clientName: "Port Hills Retirement Village", loanAmount: 3_100_000, purpose: "commercial_property", location: "Canterbury", propertyValue: 5_000_000, status: "settled", createdDaysAgo: 76, matches: [
+      { name: "Longacre Capital", score: 87, reasons: ["Canterbury coverage", "Commercial property appetite"], stage: "interested", daysAgo: 73, matchedDaysAgo: 76, contactedDaysAgo: 75, responseDaysAgo: 73, responseLagDays: 2 },
+      { name: "Fernridge Capital", score: 81, reasons: ["South Island focus", "Facility within mandate"], stage: "declined", daysAgo: 72, matchedDaysAgo: 76, contactedDaysAgo: 75, responseDaysAgo: 72, responseLagDays: 3 },
+    ] },
+    { clientName: "Central City Suites Ltd", loanAmount: 12_500_000, purpose: "development", location: "Auckland Central, Auckland", propertyValue: 20_000_000, preSales: 45, termMonths: 24, status: "settled", createdDaysAgo: 48, matches: [
+      { name: "Summit Capital Partners", score: 91, reasons: ["Pre-sales threshold met", "Auckland development appetite"], stage: "interested", daysAgo: 43, matchedDaysAgo: 48, contactedDaysAgo: 46, responseDaysAgo: 43, responseLagDays: 3 },
+      { name: "Harbourview Debt Partners", score: 89, reasons: ["Main-centre development focus", "Facility within mandate"], stage: "interested", daysAgo: 42, matchedDaysAgo: 48, contactedDaysAgo: 46, responseDaysAgo: 42, responseLagDays: 4 },
+      { name: "Castlepoint Finance", score: 77, reasons: ["Nationwide development appetite"], stage: "declined", daysAgo: 44, matchedDaysAgo: 48, contactedDaysAgo: 46, responseDaysAgo: 44, responseLagDays: 2 },
+    ] },
+    { clientName: "Aoraki Fresh Foods Ltd", loanAmount: 1_450_000, purpose: "business_acquisition", location: "Otago", propertyValue: null, status: "settled", createdDaysAgo: 28, matches: [
+      { name: "Merino Private Finance", score: 91, reasons: ["Owner-operator acquisition specialist", "Otago coverage"], stage: "interested", daysAgo: 24, matchedDaysAgo: 28, contactedDaysAgo: 27, responseDaysAgo: 24, responseLagDays: 3 },
+      { name: "Fernridge Capital", score: 84, reasons: ["Otago focus", "Facility within mandate"], stage: "interested", daysAgo: 25, matchedDaysAgo: 28, contactedDaysAgo: 27, responseDaysAgo: 25, responseLagDays: 2 },
+    ] },
+  ];
+  for (const deal of history) await addApplication(deal);
+  }
+
+  console.log("Demo accounts ready: fresh@mandate.test / demo1234 (empty) and demo@mandate.test / demo1234 (six-month sample history).");
 } finally {
   await db.close();
 }

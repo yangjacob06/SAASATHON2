@@ -9,6 +9,7 @@ import type { User } from "@/lib/types";
 
 const LINKS = [
   { href: "/app", label: "Applications" },
+  { href: "/app/lender-history", label: "Lender history" },
   { href: "/app/lenders", label: "Lenders" },
   { href: "/app/billing", label: "Billing" },
   { href: "/app/settings", label: "Settings" },

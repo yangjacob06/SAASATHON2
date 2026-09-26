@@ -30,7 +30,9 @@ export interface Application {
   client_name: string;
   loan_amount_cents: number;
   purpose: LoanPurpose;
+  industry: string;
   location: string;
+  security: string;
   property_value_cents: number | null;
   pre_sales_pct: number | null;
   loan_term_months: number | null;

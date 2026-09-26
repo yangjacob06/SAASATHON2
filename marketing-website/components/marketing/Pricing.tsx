@@ -30,7 +30,7 @@ export function Pricing() {
               style={{ "--reveal-delay": "80ms" } as React.CSSProperties}
               className="lede mt-5 max-w-sm"
             >
-              Start with the essentials, then move to Pro as your deal pipeline grows. These
+              Start with the essentials, then move to Pro as your deal pipeline grows.
                             Every plan includes a 14-day trial; no card is needed to start.
             </p>
             <p

@@ -73,6 +73,9 @@
       deal.financials[key].amount = Number(value);
       deal.financials[key].currency = "NZD";
       deal.financials[key].sourceIds = (sourceIds || []).slice();
+      const source = deal.documents.find(function (d) { return (sourceIds || []).includes(d.id); });
+      const fact = source && source.extractedFields.find(function (f) { return f.field === field; });
+      deal.financials[key].periodEnd = fact ? fact.periodEnd : deal.financials[key].periodEnd;
     }
   }
 
@@ -127,7 +130,7 @@
     uploaded.forEach(function (item) {
       const row = node("div", "uploaded-file-row");
       row.append(node("span", "uploaded-file-name", item.name));
-      row.append(node("span", "uploaded-file-state", (item.extractedFields || []).length + " details read locally"));
+      row.append(node("span", "uploaded-file-state", item.kind === "financial_history" ? (deal.pitchHistory || []).length + " annual periods read locally" : (item.extractedFields || []).length + " details read locally"));
       list.append(row);
     });
   }
@@ -194,7 +197,7 @@
     return candidateValues(deal, field).find(function (item) { return item.sourceIds.includes(choice); });
   }
 
-  function resolveField(field, choice) {
+  function resolveField(field, choice, render = true) {
     const deal = currentDeal();
     if (!deal) return;
     const candidate = candidateFor(deal, field, choice);
@@ -210,8 +213,10 @@
     deal.review.resolutions.push({ field: field, chosenValue: value, sourceIds: candidate.sourceIds.slice(), resolvedAt: new Date().toISOString(), priorConflict: previousConflict || null });
     deal.updatedAt = new Date().toISOString();
     if (global.MandateRecordActivity) global.MandateRecordActivity("Deal information confirmed", deal.id, fieldLabel(field));
-    global.renderDeal();
-    global.notify("" + fieldLabel(field) + " confirmed for review");
+    if (render) {
+      global.renderDeal();
+      global.notify("" + fieldLabel(field) + " confirmed for review");
+    }
   }
 
   function parseCsv(text) {
@@ -247,6 +252,10 @@
     if (["funding.amount", "funding.termMonths", "financials.annualRevenue", "financials.ebitda"].includes(field)) {
       value = Number(value.replace(/[$,\s]/g, ""));
       if (!Number.isFinite(value)) throw new Error("A numeric value in " + fieldLabel(field) + " could not be read.");
+      if (field !== "financials.ebitda" && value < 0) throw new Error(fieldLabel(field) + " cannot be negative.");
+      if (field === "funding.amount" && value === 0) throw new Error("The requested amount must be greater than zero.");
+      if (field === "funding.termMonths" && (!Number.isInteger(value) || value < 1 || value > 600)) throw new Error("Use a whole term between 1 and 600 months.");
+      if (row.currency && row.currency !== "NZD") throw new Error("The pitch demo accepts NZD figures only.");
     }
     if (field === "funding.security") value = value.split(";").map(function (item) { return item.trim(); }).filter(Boolean);
     return { field: field, value: value, currency: row.currency || null, periodEnd: row.period_end || null };
@@ -269,7 +278,8 @@
       if (values.some(function (value) { return !sameValue(field, values[0], value); })) {
         throw new Error("This file has more than one different value for " + fieldLabel(field) + ". Keep one value per field in each CSV.");
       }
-      return { field: field, value: values[0] };
+      const source = rows.find(function (row) { return row.field.trim() === field; });
+      return { field: field, value: values[0], currency: source.currency || null, periodEnd: source.period_end || null };
     });
   }
 
@@ -320,7 +330,7 @@
 
   function addUploadedDocument(deal, fileName, facts) {
     const id = "local-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
-    const kind = fileName.toLowerCase().replace(/^.*kowhai-/, "").replace(/\.csv$/, "").replace(/-/g, "_");
+    const kind = fileName.toLowerCase().replace(/^.*(?:kowhai|southern)-/, "").replace(/\.csv$/, "").replace(/-/g, "_");
     const documentRecord = {
       id: id,
       name: fileName,
@@ -416,12 +426,25 @@
     try {
       for (const file of newFiles) {
         const text = await file.text();
+        if (global.MandatePitch && /^\uFEFF?period_id,company_id,/.test(text)) {
+          const history = global.MandatePitch.parseHistory(text, deal);
+          if (deal.pitchHistory && deal.pitchHistory.length) throw new Error("A financial history file is already attached. Start a new draft to use a different history.");
+          if (parsed.some(function (item) { return item.history; })) throw new Error("Choose one financial history file per deal.");
+          parsed.push({file:file, history:history});
+          continue;
+        }
         const facts = combineRows(parseCsv(text));
         if (!facts.length) throw new Error(file.name + " did not contain any supported deal fields.");
         parsed.push({ file: file, facts: facts });
       }
       await new Promise(function (resolve) { global.setTimeout(resolve, 450); });
-      parsed.forEach(function (item) { addUploadedDocument(deal, item.file.name, item.facts); });
+      parsed.forEach(function (item) {
+        if (item.history) {
+          deal.pitchHistory = item.history;
+          deal.documents.push({id:"history-"+Date.now(),name:item.file.name,sourceType:"local_file",kind:"financial_history",status:"processed",extractedFields:[]});
+          deal.updatedAt = new Date().toISOString();
+        } else addUploadedDocument(deal, item.file.name, item.facts);
+      });
       if (global.MandateRecordActivity) global.MandateRecordActivity("Synthetic documents added", deal.id, parsed.length + " file" + (parsed.length === 1 ? "" : "s"));
       global.renderDeal();
       showMessage("Read " + parsed.length + " file" + (parsed.length === 1 ? "" : "s") + " locally. Review each extracted value and source below.", "success");
@@ -512,6 +535,7 @@
     renderExtractedFacts(deal);
   }
 
+  global.MandateSourceReview = {resolveField, ensureCandidates, readField, sameValue};
   const baseRenderDeal = global.renderDeal;
   global.renderDeal = function () {
     const result = baseRenderDeal();

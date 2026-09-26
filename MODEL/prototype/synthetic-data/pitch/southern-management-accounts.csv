@@ -1,0 +1,4 @@
+field,value,currency,period_end
+company.name,Southern Manufacturing Demo Ltd,,
+financials.annualRevenue,33000000,NZD,2026-03-31
+financials.ebitda,4300000,NZD,2026-03-31

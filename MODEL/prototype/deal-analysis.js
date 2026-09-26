@@ -56,7 +56,7 @@
       parts.push(companyName + " is seeking " +
         (formatMoney(amount, funding.currency) || "an amount not provided") +
         (termMonths ? " over " + termMonths + " months" : "") +
-        (purpose ? " for " + purpose.toLowerCase() : ""));
+        (purpose ? " for " + purpose.toLowerCase() : "") + ".");
     } else {
       if (hasConflict(deal, "company.name")) parts.push("The company name needs adviser confirmation.");
       else { missing.push("Company name"); parts.push("The company name has not been provided."); }

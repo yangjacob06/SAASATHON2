@@ -156,7 +156,7 @@
   }
 
   function refreshCurrentView(id) {
-    if (document.querySelector("#appContent .detail-layout")) global.renderDeal();
+    if (document.querySelector("#appContent .detail-layout, #appContent .pitch-workspace")) global.renderDeal();
     else if (currentPage === "deals") global.renderDeals();
     else if (currentPage === "activity") global.renderActivity();
     else if (currentPage === "lenders") global.renderLenders();

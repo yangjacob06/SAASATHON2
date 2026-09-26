@@ -1,0 +1,681 @@
+@import "tailwindcss";
+
+/*
+  Mandate — design system.
+
+  Architectural, not atmospheric. A warm off-white ground carries roughly
+  seventy per cent of the site, deep graphite about twenty, greys eight, and
+  the one accent two. The restraint is the product: precision reads as
+  expensive, effects read as compensation.
+
+  Two typefaces, two jobs. The serif is for editorial statement — the things
+  a person is meant to feel. The sans is for everything technical: labels,
+  metadata, navigation, product detail. That contrast IS the identity, so
+  neither face should ever do the other's work.
+
+  Three systems live here: colour + type tokens, a spacing/rhythm scale, and
+  the motion language (§ Motion). Component files reach for these rather
+  than inventing values.
+*/
+
+@theme {
+  /* ── Ground · ~70% ────────────────────────────────────────────────── */
+  /*
+    Not white. The warmth is what separates an editorial page from an
+    application shell, and it is the single decision the rest of the
+    palette is tuned against.
+  */
+  --color-paper: #f3f2ee;
+  /* A half-step down, for sections that need to separate without a rule. */
+  --color-paper-soft: #eceae4;
+  /* A half-step up, for the few surfaces that sit above the ground. */
+  --color-paper-lift: #fafaf7;
+
+  /* ── Graphite · ~20% ──────────────────────────────────────────────── */
+  /*
+    Ink, never #000. Pure black on a warm ground reads as a hole punched in
+    the page; graphite sits on it.
+  */
+  --color-graphite: #111210;
+  --color-graphite-soft: #1c1d1a;
+
+  /* ── Greys · ~8% ──────────────────────────────────────────────────── */
+  --color-grey: #777873;          /* supporting copy */
+  --color-grey-light: #a4a49d;    /* metadata, micro type */
+  --color-rule: #d7d6d0;          /* the standard hairline */
+  --color-rule-strong: #c2c1b9;   /* where a border must be felt */
+
+  /* ── Signal · ~2% ─────────────────────────────────────────────────── */
+  /*
+    One accent, spent carefully: interactive states, selected navigation,
+    live indicators, the occasional key word. It is a technology signal,
+    not a brand colour — the moment it covers a surface it stops meaning
+    anything.
+  */
+  --color-signal: #5b7cff;
+  --color-signal-deep: #3d5ee0;
+  --color-signal-soft: #e9edff;
+
+  /* ── Status tints ─────────────────────────────────────────────────── */
+  --color-go: #1f6b46;
+  --color-go-soft: #e6efe9;
+  --color-sky: #2f57c9;
+  --color-sky-soft: #e9edff;
+  --color-amber: #92620a;
+  --color-amber-soft: #f8f0dd;
+  --color-violet: #5a4b9c;
+  --color-violet-soft: #ede9f7;
+  --color-stop: #9c2b2b;
+  --color-stop-soft: #f7e9e7;
+
+  /* ── Type ─────────────────────────────────────────────────────────── */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  /*
+    Only the summary editor uses this — plain-text drafting, where column
+    alignment genuinely helps. A system stack, because loading a webfont
+    for one textarea is not a trade worth making.
+  */
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /*
+    Fluid display sizes. Each clamp is tuned so the *mobile* end is a
+    deliberate size in its own right, not the desktop size shrunk — a
+    display headline that fills a phone screen edge to edge reads as an
+    accident, not as art direction.
+  */
+  --text-display: clamp(2.6rem, 1.7rem + 3.9vw, 5.25rem);
+  --text-h1: clamp(2.25rem, 1.55rem + 3vw, 4rem);
+  --text-h2: clamp(1.875rem, 1.4rem + 2.1vw, 3.125rem);
+  --text-h3: clamp(1.25rem, 1.05rem + 0.9vw, 1.75rem);
+
+  /* ── Shape + depth ────────────────────────────────────────────────── */
+  --radius-control: 6px;
+  --radius-card: 14px;
+  --radius-panel: 20px;
+
+  --shadow-card: 0 1px 2px rgb(22 21 15 / 0.04), 0 8px 24px -12px rgb(22 21 15 / 0.10);
+  --shadow-lift: 0 2px 6px rgb(22 21 15 / 0.05), 0 28px 56px -24px rgb(22 21 15 / 0.22);
+  --shadow-float: 0 4px 10px rgb(22 21 15 / 0.04), 0 50px 90px -40px rgb(22 21 15 / 0.30);
+
+  /* ── Motion ───────────────────────────────────────────────────────── */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/*
+  Deliberately no `prefers-color-scheme: dark` override. `bg-ink`/`text-bone`
+  and `bg-forest`/`text-bone` are used throughout as *fixed* pairings — the
+  dark stat band, the closing CTA, the primary button. A token swap here
+  would silently invert those and turn light-on-dark into dark-on-dark.
+*/
+
+* {
+  border-color: var(--color-rule);
+}
+
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+  /* The sticky header is 72px; anchored sections land clear of it. */
+  scroll-padding-top: 6rem;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-graphite);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-signal);
+  color: var(--color-paper);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ── Type helpers ───────────────────────────────────────────────────── */
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/*
+  Display headlines. Optical tracking tightens as size grows — the serif
+  needs negative tracking at 100px that would close it up at 30px.
+*/
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.headline {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+
+/* The italic cut carries the emphasis in every display line. */
+.accent {
+  font-style: italic;
+  color: var(--color-graphite);
+}
+
+/* Small-caps label used above every section headline. */
+/*
+  Section labels. Sans, tracked, small — the technical register. The accent
+  version marks the one label on a screen that is doing navigational work;
+  the quiet version is everything else.
+*/
+.eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-signal);
+}
+
+.eyebrow-quiet {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-grey-light);
+}
+
+.lede {
+  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  line-height: 1.62;
+  color: var(--color-grey);
+  text-wrap: pretty;
+}
+
+/* Tabular figures keep money and percentages from jittering. */
+.nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ── Structure ──────────────────────────────────────────────────────── */
+
+/*
+  One container for the whole site. Gutters step with the breakpoints so the
+  edge margin always reads as deliberate rather than as leftover space.
+*/
+.shell {
+  width: 100%;
+  max-width: 82.5rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .shell {
+    padding-inline: 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .shell {
+    padding-inline: 4rem;
+  }
+}
+
+/* Vertical rhythm: one section step, fluid between phone and desktop. */
+.section {
+  padding-block: clamp(4.5rem, 3rem + 6vw, 8rem);
+}
+
+.section-tight {
+  padding-block: clamp(3.5rem, 2.5rem + 4vw, 6rem);
+}
+
+/* Hairline blueprint grid — sits under the hero, near-invisible but felt. */
+.blueprint {
+  background-image:
+    linear-gradient(to right, rgb(17 18 16 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(17 18 16 / 0.045) 1px, transparent 1px);
+  background-size: 5.5rem 5.5rem;
+  background-position: center top;
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────── */
+
+/*
+  One reveal primitive, driven by the IntersectionObserver in
+  `components/ui/Reveal.tsx`. Elements start displaced and un-inked; the
+  observer adds `data-shown` once. Distance is small on purpose — the site
+  should feel like it settles, not like it flies in.
+*/
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 0.85s var(--ease-out-expo),
+    transform 0.95s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+[data-reveal="fade"] {
+  transform: none;
+}
+
+[data-reveal="right"] {
+  transform: translate3d(-22px, 0, 0);
+}
+
+[data-reveal="scale"] {
+  transform: translate3d(0, 26px, 0) scale(0.985);
+  transform-origin: center top;
+}
+
+[data-reveal][data-shown] {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/*
+  A mask wipe for display headlines: the line rises out from behind its own
+  clipped box. Needs the inner span, so it lives on `.reveal-line > span`.
+*/
+.reveal-line {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.06em;
+  margin-block: -0.06em;
+}
+
+.reveal-line > span {
+  display: block;
+  transform: translate3d(0, 110%, 0);
+  transition: transform 1.05s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-shown] .reveal-line > span,
+.reveal-line[data-shown] > span {
+  transform: none;
+}
+
+/* Arrow nudge shared by every link and button that carries one. */
+.nudge svg,
+.nudge [data-arrow] {
+  transition: transform 0.45s var(--ease-out-expo);
+}
+
+.nudge:hover svg,
+.nudge:hover [data-arrow] {
+  transform: translate3d(3px, -3px, 0);
+}
+
+.nudge-right:hover svg,
+.nudge-right:hover [data-arrow] {
+  transform: translate3d(4px, 0, 0);
+}
+
+/* Underline that draws in from the left rather than blinking on. */
+.rule-link {
+  position: relative;
+}
+
+.rule-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--ease-out-expo);
+}
+
+.rule-link:hover::after,
+.rule-link[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.82); }
+}
+
+.live-dot {
+  animation: pulse-dot 2.8s var(--ease-in-out-soft) infinite;
+}
+
+/* ── World ──────────────────────────────────────────────────────────── */
+
+/*
+  There is one ground now. The site used to run two worlds — a near-black
+  brand half and a light product half — and the seam between them was the
+  weakest thing about it. Graphite is still here, but as panels inside the
+  page rather than as a separate place.
+*/
+.world {
+  background: var(--color-paper);
+  color: var(--color-graphite);
+}
+
+/*
+  Tonal steps. Sections declare one, so the page changes temperature as it
+  scrolls without a gradient anywhere — the shift is only ever perceptible
+  against the section before it.
+*/
+.stratum-1 { background: var(--color-paper); }
+.stratum-2 { background: var(--color-paper-soft); }
+.stratum-3 { background: var(--color-paper-lift); }
+
+/*
+  A graphite panel. Full-bleed, high contrast, used two or three times on a
+  page at most — it is the twenty per cent, and it only works while it
+  stays rare.
+*/
+.panel-dark {
+  background: var(--color-graphite);
+  color: var(--color-paper);
+}
+
+.panel-dark .tech { color: rgb(243 242 238 / 0.55); }
+.panel-dark .tech-accent { color: var(--color-signal); }
+.panel-dark .lede { color: rgb(243 242 238 / 0.7); }
+.panel-dark ::selection { background: var(--color-signal); color: var(--color-paper); }
+
+
+/*
+  Technical micro-type: labels, indices, coordinates, status. Set in the
+  sans and tracked out, never in a mono — a monospace face for small labels
+  is the commonest shorthand for "technical", which is exactly why it no
+  longer says anything.
+*/
+.tech {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-grey-light);
+}
+
+.tech-accent {
+  color: var(--color-signal);
+}
+
+/*
+  The opening's display size. Larger and tighter than the product world's,
+  because it has nothing to share the screen with, and set in the serif's
+  optical extreme where the thin strokes actually read as thin.
+*/
+.display-xl {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+  /*
+    The small end is set so the longest line in use ("Private credit,")
+    still fits one line at 390px. Characters are split into inline-blocks
+    for the stagger, which means an overflowing line orphans its last
+    glyph — a comma alone on a row — rather than wrapping gracefully.
+  */
+  font-size: clamp(2.5rem, 0.2rem + 9.6vw, 11rem);
+}
+
+/* A hairline that belongs to the dark ground rather than the light one. */
+.rule-dark {
+  border-color: rgb(243 242 238 / 0.18);
+}
+
+/* ── Motion: brand world ────────────────────────────────────────────── */
+
+/*
+  A character-level stagger for the opening's display lines. The wrapper
+  sets `--i` per character; the delay is derived, so markup carries an index
+  and nothing else.
+*/
+.char {
+  display: inline-block;
+  transform: translate3d(0, 0.9em, 0) rotate(2deg);
+  opacity: 0;
+  transition:
+    transform 1.1s var(--ease-out-expo),
+    opacity 0.8s linear;
+  transition-delay: calc(var(--i, 0) * 17ms + var(--reveal-delay, 0ms));
+}
+
+[data-shown] .char {
+  transform: none;
+  opacity: 1;
+}
+
+/* Preserve the word space a whitespace-only inline-block would collapse. */
+.char-space {
+  display: inline-block;
+  width: 0.28em;
+}
+
+/*
+  Magnetic pull for the primary CTA. The element is translated by a client
+  hook; the transition smooths the return when the pointer leaves.
+*/
+.magnetic {
+  transition: transform 0.6s var(--ease-out-expo);
+}
+
+.magnetic[data-pulling] {
+  transition: transform 0.18s var(--ease-out-quint);
+}
+
+/* ── Scene choreography ─────────────────────────────────────────────── */
+
+/*
+  The hero is a sequence, not a page load: the photograph resolves first,
+  then the label, the headline, the founder row and the scroll cue follow it
+  in. Each element declares its place with `--scene-step`; the delay is
+  derived, so re-ordering the sequence is a number change.
+
+  The trigger is `data-scene-ready`, set by `CinematicPhoto` when the image
+  has decoded — and unconditionally on a timeout, so a photograph that never
+  arrives can never leave the page blank.
+*/
+[data-scene] {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition:
+    opacity 1s var(--ease-out-expo),
+    transform 1.2s var(--ease-out-expo);
+  transition-delay: calc(var(--scene-step, 0) * 160ms + 620ms);
+}
+
+[data-scene-ready] [data-scene] {
+  opacity: 1;
+  transform: none;
+}
+
+/* The headline's per-character stagger rides the same trigger. */
+[data-scene-ready] .char {
+  transform: none;
+  opacity: 1;
+}
+
+/* A hairline that draws itself down, once, under the scroll cue. */
+.scroll-cue-line {
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 1.4s var(--ease-out-expo);
+  transition-delay: calc(var(--scene-step, 0) * 160ms + 820ms);
+}
+
+[data-scene-ready] .scroll-cue-line {
+  transform: scaleY(1);
+}
+
+/* ── Custom cursor ──────────────────────────────────────────────────── */
+
+/*
+  Desktop only, and only when the pointer is fine — a cursor ring on a
+  touch device is a bug, not a flourish. The native cursor is hidden only
+  once the ring is actually mounted and tracking (`data-cursor-ready` on
+  the root), so a failure to mount can never leave a visitor with no cursor.
+*/
+@media (pointer: fine) {
+  html[data-cursor-ready] .world,
+  html[data-cursor-ready] .world * {
+    cursor: none;
+  }
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: -1.25rem 0 0 -1.25rem;
+  border: 1px solid var(--color-grey-light);
+  border-radius: 999px;
+  color: var(--color-paper);
+  mix-blend-mode: difference;
+  transition:
+    width 0.45s var(--ease-out-expo),
+    height 0.45s var(--ease-out-expo),
+    margin 0.45s var(--ease-out-expo),
+    background-color 0.45s var(--ease-out-expo),
+    border-color 0.45s var(--ease-out-expo),
+    opacity 0.3s linear;
+}
+
+.cursor-ring[data-state="hidden"] {
+  opacity: 0;
+}
+
+/* Over a link or control: contract to a filled point. */
+.cursor-ring[data-state="link"] {
+  width: 0.6rem;
+  height: 0.6rem;
+  margin: -0.3rem 0 0 -0.3rem;
+  background: var(--color-graphite);
+  border-color: var(--color-graphite);
+}
+
+/* Over the primary action: expand and name the act. */
+.cursor-ring[data-state="enter"] {
+  width: 6rem;
+  height: 6rem;
+  margin: -3rem 0 0 -3rem;
+  background: var(--color-signal);
+  border-color: var(--color-signal);
+}
+
+.cursor-label {
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.3s linear;
+}
+
+.cursor-ring[data-state="enter"] .cursor-label {
+  opacity: 1;
+  transition-delay: 0.12s;
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .cursor-ring {
+    display: none;
+  }
+}
+
+/* ── Grain ──────────────────────────────────────────────────────────── */
+
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-data: reduce) {
+  .grain {
+    display: none;
+  }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────── */
+
+/*
+  Everything above degrades to "already arrived" rather than to a jump: the
+  reveal states resolve, the hover transforms stop, smooth scrolling is off.
+*/
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  [data-reveal],
+  [data-reveal][data-shown] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .reveal-line > span {
+    transform: none;
+    transition: none;
+  }
+
+  .char,
+  [data-shown] .char {
+    transform: none;
+    opacity: 1;
+    transition: none;
+  }
+
+  .magnetic {
+    transform: none !important;
+    transition: none;
+  }
+
+  .live-dot {
+    animation: none;
+  }
+
+  .nudge svg,
+  .nudge [data-arrow],
+  .rule-link::after {
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

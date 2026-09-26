@@ -1,0 +1,67 @@
+/* Shared controls and list states for deals, lender criteria, and activity. */
+.app-shell .list-toolbar { display: grid; grid-template-columns: minmax(240px, 1fr) auto; align-items: center; gap: 13px 18px; margin: 0 0 15px; }
+.app-shell .list-search { min-height: 43px; display: flex; align-items: center; gap: 10px; padding: 0 12px; border: 1px solid var(--ui-rule); border-radius: 4px; background: var(--ui-card); color: var(--ui-muted); transition: border-color .18s ease, box-shadow .18s ease; }
+.app-shell .list-search:focus-within { border-color: var(--ui-blue); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ui-blue) 13%, transparent); }
+.app-shell .list-search > span:first-child { color: var(--ui-blue); font-size: 20px; line-height: 1; }
+.app-shell .list-search input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: var(--ui-ink); font: 400 12px/1.4 'Inter', sans-serif; }
+.app-shell .list-search input::placeholder { color: var(--ui-muted); opacity: .8; }
+.app-shell .list-search kbd { border: 1px solid var(--ui-rule); border-radius: 3px; padding: 3px 5px; color: var(--ui-muted); font: 500 9px/1 'Inter', sans-serif; }
+.app-shell .list-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.app-shell .list-filters .filter-chip { min-height: 34px; border-color: var(--ui-rule); border-radius: 3px; background: var(--ui-card); color: var(--ui-muted); cursor: pointer; font: 500 10px/1.2 'Inter', sans-serif; transition: background .18s ease, color .18s ease, border-color .18s ease; }
+.app-shell .list-filters .filter-chip:hover { border-color: var(--ui-blue); color: var(--ui-ink); }
+.app-shell .list-filters .filter-chip.active { border-color: var(--ui-blue-soft); background: var(--ui-blue-soft); color: var(--ui-blue); }
+.app-shell .list-filters .filter-chip b { margin-left: 5px; font-size: 9px; }
+.app-shell .list-result { grid-column: 1 / -1; margin-top: -7px; color: var(--ui-muted); font-size: 10px; }
+.app-shell .table-overflow.list-panel { padding: 0; }
+.app-shell .full-table { min-width: 790px; }
+.app-shell .full-table tbody tr[data-filter-row] { cursor: pointer; transition: background .18s ease; }
+.app-shell .full-table tbody tr[data-filter-row]:hover { background: color-mix(in srgb, var(--ui-blue-soft) 48%, var(--ui-card)); }
+.app-shell .full-table tbody tr[data-filter-row]:focus-visible { outline: 2px solid var(--ui-blue); outline-offset: -2px; }
+.app-shell .full-table td { vertical-align: middle; }
+.app-shell .full-table td:nth-child(2) b { color: var(--ui-ink); font-variant-numeric: tabular-nums; }
+.app-shell .row-arrow { color: var(--ui-blue) !important; font-size: 14px !important; }
+.app-shell .list-filter-row[hidden] { display: none !important; }
+.app-shell .empty-state { display: grid; justify-items: center; padding: 46px 20px; text-align: center; }
+.app-shell .empty-state[hidden] { display: none; }
+.app-shell .empty-state-icon { display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid var(--ui-rule); border-radius: 50%; color: var(--ui-blue); font-size: 22px; }
+.app-shell .empty-state h2 { margin: 14px 0 5px; color: var(--ui-ink); font: 500 20px/1.2 'Fraunces', Georgia, serif; }
+.app-shell .empty-state p { max-width: 360px; margin: 0 0 17px; color: var(--ui-muted); font-size: 11px; line-height: 1.6; }
+.app-shell .empty-state .button-outline { border-color: var(--ui-rule); border-radius: 3px; background: var(--ui-card); color: var(--ui-ink); cursor: pointer; }
+.app-shell .lender-grid .lender-card { display: flex; flex-direction: column; min-height: 190px; border-radius: 4px; background: var(--ui-card); transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease; }
+.app-shell .lender-grid .lender-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--ui-blue) 38%, var(--ui-rule)); box-shadow: var(--ui-shadow); }
+.app-shell .lender-card .view-lender { align-self: flex-start; margin-top: auto; padding-top: 15px; color: var(--ui-blue); cursor: pointer; font: 600 10px/1.4 'Inter', sans-serif; }
+.app-shell .lender-card .fit-label { border-radius: 3px; background: var(--ui-blue-soft); color: var(--ui-blue); font-size: 9px; }
+.app-shell .lender-note { border-radius: 4px; background: var(--ui-blue-soft); color: var(--ui-muted); }
+.app-shell .lender-note b { color: var(--ui-ink); }
+.app-shell .lender-note p { margin: 5px 0 0; line-height: 1.65; }
+.app-shell .activity-feed { padding: 0 20px; }
+.app-shell .activity-feed .activity-item { min-height: 70px; align-items: center; }
+.app-shell .activity-feed .activity-item > div { min-width: 0; flex: 1; }
+.app-shell .activity-feed .activity-item b { color: var(--ui-ink); font-size: 11px; }
+.app-shell .activity-feed .activity-item p { color: var(--ui-muted); font-size: 10px; }
+.app-shell .activity-feed .activity-item time { flex: none; color: var(--ui-muted); font-size: 9px; }
+.app-shell .status-preparing, .app-shell .status-review, .app-shell .status-waiting { border-radius: 3px; font-size: 9px; font-weight: 600; }
+.app-shell .button-outline, .app-shell .button-dark, .app-shell .view-lender { transition: color .18s ease, background .18s ease, border-color .18s ease, transform .18s ease; }
+.app-shell :is(button, input, [role="button"]):focus-visible { outline: 2px solid var(--ui-blue); outline-offset: 3px; }
+.app-shell .app-content > :not(.page-title) { animation: mandate-screen-in .2s ease both; }
+@keyframes mandate-screen-in { from { opacity: .7; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+.app-shell .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.app-shell[data-theme="dark"] .list-search, .app-shell[data-theme="dark"] .list-filters .filter-chip,
+.app-shell[data-theme="dark"] .empty-state .button-outline { background: var(--ui-card); border-color: var(--ui-rule); color: var(--ui-muted); }
+.app-shell[data-theme="dark"] .list-filters .filter-chip.active { background: var(--ui-blue-soft); color: var(--ui-blue); }
+.app-shell[data-theme="dark"] .lender-note { background: #202235; border-color: #353951; }
+@media (max-width: 800px) {
+  .app-shell .list-toolbar { grid-template-columns: 1fr; gap: 10px; }
+  .app-shell .list-filters { overflow-x: auto; flex-wrap: nowrap; padding: 1px 1px 5px; }
+  .app-shell .list-filters .filter-chip { flex: none; }
+  .app-shell .lender-grid { grid-template-columns: 1fr; }
+  .app-shell .activity-feed { padding: 0 13px; }
+}
+@media (max-width: 520px) {
+  .app-shell .list-search { min-height: 42px; }
+  .app-shell .list-search kbd { display: none; }
+  .app-shell .list-result { margin-top: -2px; }
+  .app-shell .activity-feed .activity-item { align-items: flex-start; padding: 13px 0; }
+  .app-shell .activity-feed .activity-item time { padding-top: 3px; }
+  .app-shell .empty-state { padding: 36px 16px; }
+}

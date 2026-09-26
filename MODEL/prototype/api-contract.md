@@ -1,3 +1,5 @@
+> **Implemented API and preserved draft.** The implemented persistent API is documented in [WORKSPACE_API.md](../../docs/WORKSPACE_API.md). The `/api/v1/deals/analyze` proposal below remains an unimplemented partner-integration draft. Existing browser adapter contracts are preserved. Do not implement a client against this draft without reconciling it with the actual workspace routes.
+
 # Mandate analysis API contract — pre-implementation draft
 
 This document defines the handoff between the adviser interface and a future Mandate backend. It is a contract proposal, not a live API. The current prototype remains browser-only and uses fictional data.

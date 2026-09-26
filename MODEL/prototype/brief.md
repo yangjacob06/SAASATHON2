@@ -1,3 +1,5 @@
+> **Persistent workspace delivery.** The static prototype described below remains available at `/prototype/index.html`. The expanded adviser workspace now runs at `/` with an Express/PostgreSQL API, durable drafts, versioned comparison evidence, independent provider activity, funding scenarios, terms and private reports. See [workspace implementation and run guide](../../docs/WORKSPACE.md) and [implemented API](../../docs/WORKSPACE_API.md). The original sections below preserve the partner’s prototype brief and are historical context, not claims that the new workspace is browser-memory-only.
+
 # Mandate prototype: new-deal data flow brief
 
 ## Purpose

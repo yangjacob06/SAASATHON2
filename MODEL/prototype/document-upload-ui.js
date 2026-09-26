@@ -279,6 +279,11 @@
     return deal.review.proposedValues[field];
   }
 
+  // Shared adapter boundary: the persistent workspace uses these exact parser
+  // functions too. The original prototype UI and extraction behaviour stay intact.
+  global.MandateCSV = Object.freeze({ parseCsv: parseCsv, convertRow: convertRow, addUploadedDocument: addUploadedDocument });
+  if (global.MandateParserOnly) return;
+
   function recordConflict(deal, field, current, extracted, documentId, fileName) {
     const conflicts = deal.review.conflicts || (deal.review.conflicts = []);
     let conflict = conflicts.find(function (item) { return item.field === field; });

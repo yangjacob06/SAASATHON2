@@ -1,0 +1,20 @@
+{
+  "name": "mandate-workspace",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "migrate": "node server/cli.js migrate",
+    "seed": "node server/cli.js seed",
+    "test": "node --test --test-concurrency=1 tests/*.test.js"
+  },
+  "engines": { "node": ">=22" },
+  "dependencies": {
+    "@electric-sql/pglite": "^0.3.14",
+    "@supabase/supabase-js": "^2.57.4",
+    "csv-parse": "^6.1.0",
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "zod": "^4.1.11"
+  }
+}

@@ -1,3 +1,7 @@
+"use client";
+
+import { useRef, useState, type DragEvent } from "react";
+
 import { Card } from "@/components/ui/Card";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import { uploadDocumentsAction } from "@/lib/actions/applications";
@@ -10,6 +14,21 @@ function formatSize(bytes: number) {
 }
 
 export function DocumentsCard({ applicationId, documents }: { applicationId: string; documents: ApplicationDocument[] }) {
+  const filesRef = useRef<HTMLInputElement>(null);
+  const [queuedFiles, setQueuedFiles] = useState<string[]>([]);
+  const [dragging, setDragging] = useState(false);
+
+  function acceptDrop(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    setDragging(false);
+    const dropped = Array.from(event.dataTransfer.files);
+    if (!dropped.length || !filesRef.current) return;
+    const transfer = new DataTransfer();
+    dropped.forEach((file) => transfer.items.add(file));
+    filesRef.current.files = transfer.files;
+    setQueuedFiles(dropped.map((file) => file.name));
+  }
+
   return (
     <Card className="p-7">
       <h2 className="font-display text-xl text-graphite">Documents</h2>
@@ -56,15 +75,25 @@ export function DocumentsCard({ applicationId, documents }: { applicationId: str
 
       <form action={uploadDocumentsAction} className="mt-5">
         <input type="hidden" name="application_id" value={applicationId} />
-        <label className="mb-2 block text-[12.5px] font-medium text-graphite-soft" htmlFor="deal-documents">Choose files</label>
-        <input
-          id="deal-documents"
-          name="documents"
-          type="file"
-          accept="application/pdf,.pdf,text/csv,.csv"
-          multiple
-          className="block w-full rounded-[var(--radius-control)] border border-dashed border-rule-strong bg-paper-soft px-3.5 py-4 text-[12.5px] text-grey file:mr-3 file:rounded-[4px] file:border-0 file:bg-graphite file:px-3 file:py-1.5 file:text-[12px] file:font-medium file:text-paper"
-        />
+        <div
+          onDragOver={(event) => { event.preventDefault(); setDragging(true); }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={acceptDrop}
+          className={`rounded-[var(--radius-control)] border border-dashed px-3.5 py-4 transition-colors ${dragging ? "border-sky bg-sky-soft" : "border-rule-strong bg-paper-soft"}`}
+        >
+          <label className="mb-2 block text-[12.5px] font-medium text-graphite-soft" htmlFor="deal-documents">Drop files here or choose files</label>
+          <input
+            ref={filesRef}
+            id="deal-documents"
+            name="documents"
+            type="file"
+            accept="application/pdf,.pdf,text/csv,.csv"
+            multiple
+            onChange={(event) => setQueuedFiles(Array.from(event.currentTarget.files ?? []).map((file) => file.name))}
+            className="block w-full text-[12.5px] text-grey file:mr-3 file:rounded-[4px] file:border-0 file:bg-graphite file:px-3 file:py-1.5 file:text-[12px] file:font-medium file:text-paper"
+          />
+          {queuedFiles.length > 0 && <p className="mt-2 text-[11px] text-grey">Ready to upload: {queuedFiles.join(", ")}</p>}
+        </div>
         <label className="mb-2 mt-4 block text-[12.5px] font-medium text-graphite-soft" htmlFor="deal-folder">Or choose a folder</label>
         <input
           id="deal-folder"

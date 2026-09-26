@@ -138,7 +138,7 @@ export default async function DashboardPage({
               <h2 id="history-heading" className="font-display text-xl text-graphite">Six-month deal history</h2>
               <p className="mt-1 text-[12.5px] text-grey">Lender activity recorded across this account. Demo records are fictional.</p>
             </div>
-            <span className="text-[11px] text-grey">Reply time runs from contact to first response.</span>
+            <Link href="/app/lender-history" className="text-[12px] font-medium text-sky hover:underline">View lender response patterns →</Link>
           </div>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
             {[

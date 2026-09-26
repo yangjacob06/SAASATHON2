@@ -4,11 +4,13 @@ import { ApplicationHeader } from "@/components/app/ApplicationHeader";
 import { DealSummaryCard } from "@/components/app/DealSummaryCard";
 import { DocumentsCard } from "@/components/app/DocumentsCard";
 import { LenderMatchList } from "@/components/app/LenderMatchList";
+import { SyntheticReviewPanel } from "@/components/app/SyntheticReviewPanel";
 import { Timeline } from "@/components/app/Timeline";
 import { requireUser } from "@/lib/auth";
 import { planFor } from "@/lib/billing";
 import { one, query } from "@/lib/db";
 import { listApplicationLenders } from "@/lib/lenders";
+import { reviewSyntheticSources } from "@/lib/synthetic/engine";
 import type { Application, ApplicationDocument, ApplicationEvent, DealSummary } from "@/lib/types";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
@@ -33,6 +35,7 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
 
   const plan = planFor(user);
   const canExportWithLogo = plan?.id === "pro";
+  const sourceReviewRows = reviewSyntheticSources(app, documents);
 
   return (
     <div className="space-y-8">
@@ -48,6 +51,8 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
           <Timeline applicationId={app.id} events={events} />
         </div>
       </div>
+
+      <SyntheticReviewPanel app={app} documents={documents} rows={sourceReviewRows} />
 
       {canExportWithLogo === false && summary && (
         <p className="text-center text-[12.5px] text-grey">

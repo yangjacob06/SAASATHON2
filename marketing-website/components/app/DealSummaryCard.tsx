@@ -52,7 +52,7 @@ export function DealSummaryCard({
           <form action={generateSummaryAction}>
             <input type="hidden" name="application_id" value={applicationId} />
             <SubmitButton pendingLabel="Generating…" className="!bg-graphite !px-3.5 !py-1.5 !text-[12.5px]">
-              {summary ? "Run analysis again" : "Analyze deal & prepare PDF"}
+              {summary ? "Match all data again" : "Match all data & prepare PDF"}
             </SubmitButton>
           </form>
         </div>

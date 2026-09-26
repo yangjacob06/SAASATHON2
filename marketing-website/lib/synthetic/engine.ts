@@ -68,6 +68,17 @@ function normalized(value: unknown): string {
   return String(value ?? "").trim().toLowerCase();
 }
 
+function comparisonValue(field: string, value: string): string {
+  if (field === "funding.security") {
+    return [...new Set(value.split(";").map((item) => normalized(item).replace(/[_.-]+/g, " ")).filter(Boolean))].sort().join("; ");
+  }
+  if (field === "funding.amount" || field === "funding.termMonths" || field.startsWith("financials.")) {
+    const parsed = Number(value.replace(/[$,\s]/g, ""));
+    if (Number.isFinite(parsed)) return String(parsed);
+  }
+  return normalized(value).replace(/[_.-]+/g, " ").replace(/\s+/g, " ");
+}
+
 function numeric(value: string): number | null {
   const parsed = Number(value.replace(/[$,\s]/g, ""));
   return Number.isFinite(parsed) ? parsed : null;
@@ -158,21 +169,26 @@ function syntheticDeal(app: Application, documents: ApplicationDocument[]) {
 
   const formValues: Record<string, string> = {
     "company.name": app.client_name,
+    "company.industry": app.industry,
     "company.location": app.location,
     "funding.amount": String(app.loan_amount_cents / 100),
     "funding.purpose": PURPOSE_LABEL[app.purpose],
+    "funding.security": parseSecurity(app.security).join("; "),
     ...(app.loan_term_months ? { "funding.termMonths": String(app.loan_term_months) } : {}),
   };
   const conflicts: Array<{ field: string; message: string }> = [];
   for (const [field, fieldValues] of values) {
-    const candidates = [...fieldValues, ...(formValues[field] ? [formValues[field]] : [])];
-    if (new Set(candidates.map(normalized)).size > 1) {
+    const csvValue = field === "funding.security" ? [...new Set(fieldValues)].join("; ") : null;
+    const candidates = field === "funding.security"
+      ? [...(csvValue ? [csvValue] : []), ...(formValues[field] ? [formValues[field]] : [])]
+      : [...fieldValues, ...(formValues[field] ? [formValues[field]] : [])];
+    if (new Set(candidates.map((value) => comparisonValue(field, value))).size > 1) {
       conflicts.push({ field, message: `Sources disagree about ${field}: ${candidates.join("; ")}. Confirm the correct value.` });
     }
   }
 
   const valueFor = (field: string, fallback?: string) => {
-    const csvValue = values.get(field)?.[0];
+    const csvValue = field === "funding.security" ? [...new Set(values.get(field) ?? [])].join("; ") : values.get(field)?.[0];
     return csvValue ?? fallback ?? "";
   };
   const amountRaw = valueFor("funding.amount", formValues["funding.amount"]);
@@ -204,6 +220,65 @@ function syntheticDeal(app: Application, documents: ApplicationDocument[]) {
     })),
     review: { conflicts },
   };
+}
+
+export interface SyntheticSourceReviewRow {
+  field: string;
+  label: string;
+  formValue: string | null;
+  sources: Array<{ filename: string; value: string }>;
+  state: "aligned" | "conflict" | "review";
+}
+
+const SOURCE_FIELD_LABELS: Record<string, string> = {
+  "company.name": "Company name",
+  "company.industry": "Industry",
+  "company.location": "Location",
+  "funding.amount": "Funding amount",
+  "funding.purpose": "Funding purpose",
+  "funding.termMonths": "Requested term",
+  "funding.security": "Security",
+  "financials.annualRevenue": "Annual revenue",
+  "financials.ebitda": "EBITDA",
+};
+
+export function reviewSyntheticSources(app: Application, documents: ApplicationDocument[]): SyntheticSourceReviewRow[] {
+  const formValues: Record<string, string | null> = {
+    "company.name": app.client_name || null,
+    "company.industry": app.industry || null,
+    "company.location": app.location || null,
+    "funding.amount": String(app.loan_amount_cents / 100),
+    "funding.purpose": PURPOSE_LABEL[app.purpose],
+    "funding.termMonths": app.loan_term_months ? String(app.loan_term_months) : null,
+    "funding.security": parseSecurity(app.security).join("; ") || null,
+    "financials.annualRevenue": null,
+    "financials.ebitda": null,
+  };
+  const grouped = new Map<string, Array<{ filename: string; value: string }>>();
+  for (const document of documents) {
+    if (!document.filename.toLowerCase().endsWith(".csv") || !document.extracted_text) continue;
+    for (const fact of csvFacts(document.extracted_text)) {
+      if (!SOURCE_FIELD_LABELS[fact.field]) continue;
+      const values = grouped.get(fact.field) ?? [];
+      values.push({ filename: document.filename, value: fact.value });
+      grouped.set(fact.field, values);
+    }
+  }
+
+  return [...grouped.entries()].map(([field, sources]) => {
+    const formValue = formValues[field] || null;
+    const sourceValue = field === "funding.security" ? [...new Set(sources.map((source) => source.value))].join("; ") : null;
+    const candidates = field === "funding.security"
+      ? [...(sourceValue ? [sourceValue] : []), ...(formValue ? [formValue] : [])]
+      : [...sources.map((source) => source.value), ...(formValue ? [formValue] : [])];
+    const distinct = new Set(candidates.map((value) => comparisonValue(field, value)));
+    const state: SyntheticSourceReviewRow["state"] = distinct.size > 1
+      ? "conflict"
+      : formValue
+        ? "aligned"
+        : "review";
+    return { field, label: SOURCE_FIELD_LABELS[field], formValue, sources, state };
+  });
 }
 
 export function analyzeSyntheticApplication(app: Application, documents: ApplicationDocument[]): SyntheticAnalysis | null {

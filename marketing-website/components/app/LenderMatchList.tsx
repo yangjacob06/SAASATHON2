@@ -61,6 +61,24 @@ export function LenderMatchList({ applicationId, matches }: { applicationId: str
                 </span>
               </div>
 
+              <div className="mt-4 max-w-sm">
+                <div className="flex items-center justify-between text-[11.5px]">
+                  <span className="text-grey">Criteria match</span>
+                  <span className="font-semibold text-graphite">{Math.max(0, Math.min(100, Number(m.match_score) || 0))}%</span>
+                </div>
+                <div
+                  className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-paper-soft"
+                  role="progressbar"
+                  aria-label={`${m.lender.name} criteria match`}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={Math.max(0, Math.min(100, Number(m.match_score) || 0))}
+                >
+                  <div className="h-full rounded-full bg-signal" style={{ width: `${Math.max(0, Math.min(100, Number(m.match_score) || 0))}%` }} />
+                </div>
+                <p className="mt-1 text-[10.5px] text-grey">Fit against the listed criteria; not an approval probability or offer.</p>
+              </div>
+
               <ul className="mt-3 space-y-1">
                 {m.match_reasons.map((r, i) => (
                   <li key={i} className="flex gap-2 text-[13.5px] text-graphite-soft">

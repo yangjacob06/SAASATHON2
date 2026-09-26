@@ -10,7 +10,6 @@
  */
 export const SOFTWARE_URL = "https://mandate-ollie-software.vercel.app/";
 
-
 /** True when the platform lives outside this app, so links open accordingly. */
 export const SOFTWARE_IS_EXTERNAL = /^https?:\/\//.test(SOFTWARE_URL);
 

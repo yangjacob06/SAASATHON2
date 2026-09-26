@@ -21,5 +21,8 @@ await mkdir(output, { recursive: true });
 for (const entry of await readdir(root, { withFileTypes: true })) {
   if (entry.isFile() && ['.html', '.css', '.js'].includes(path.extname(entry.name))) await copyFile(path.join(root, entry.name), path.join(output, entry.name));
 }
-for (const directory of ['assets', 'synthetic-data', 'samples']) await copyDirectory(path.join(root, directory), path.join(output, directory));
+for (const directory of ['assets', 'synthetic-data']) await copyDirectory(path.join(root, directory), path.join(output, directory));
+// Pitch fixture samples are optional and are not tracked in this repository.
+try { await copyDirectory(path.join(root, 'samples'), path.join(output, 'samples')); }
+catch (error) { if (error.code !== 'ENOENT') throw error; }
 console.log('Mandate browser assets prepared in dist; API deployed separately.');

@@ -6,6 +6,4 @@ const db=await openDatabase();await db.migrate();
 const port=Number(process.env.PORT||4310),production=process.env.NODE_ENV==='production';
 const server=createApp(db).listen(port,production?'0.0.0.0':'127.0.0.1',async error=>{
   if(error){console.error(`Mandate could not start: ${error.code||error.message}`);await db.close();process.exitCode=1;return;}
-  console.log(`Mandate workspace: ${process.env.APP_ORIGIN||'http://127.0.0.1:'+port}`);
-});
-for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>server.close(async()=>{await db.close();process.exit(0);}));
+  console.log(`Mandate workspace: ${process.env.APP_ORIGIN||'http://127.0

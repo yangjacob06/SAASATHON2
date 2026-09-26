@@ -84,12 +84,4 @@ function buildPDF(report){
 
  const objects=[],add=value=>(objects.push(value),objects.length),pagesRef=add(null),regular=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>'),bold=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'),pageRefs=[];
  for(const p of pages){const stream=p.ops.join(''),streamRef=add(`<< /Length ${Buffer.byteLength(stream,'ascii')} >>\nstream\n${stream}endstream`),pageRef=add(`<< /Type /Page /Parent ${pagesRef} 0 R /MediaBox [0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}] /Resources << /Font << /F1 ${regular} 0 R /F2 ${bold} 0 R >> >> /Contents ${streamRef} 0 R >>`);pageRefs.push(pageRef);}
- objects[pagesRef-1]=`<< /Type /Pages /Kids [${pageRefs.map(n=>`${n} 0 R`).join(' ')}] /Count ${pageRefs.length} >>`;
- const catalog=add(`<< /Type /Catalog /Pages ${pagesRef} 0 R >>`);
- let output='%PDF-1.4\n% Mandate report\n',offsets=[0];
- objects.forEach((object,i)=>{offsets.push(Buffer.byteLength(output,'ascii'));output+=`${i+1} 0 obj\n${object}\nendobj\n`;});
- const xref=Buffer.byteLength(output,'ascii');output+=`xref\n0 ${objects.length+1}\n0000000000 65535 f \n`+offsets.slice(1).map(n=>`${String(n).padStart(10,'0')} 00000 n \n`).join('');
- output+=`trailer\n<< /Size ${objects.length+1} /Root ${catalog} 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
- return Buffer.from(output,'ascii');
-}
-export function providerReportPDF(report){return buildPDF(report);}
+ objects[pagesRef-1]=`<< /

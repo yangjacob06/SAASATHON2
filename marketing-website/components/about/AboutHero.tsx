@@ -33,13 +33,13 @@ export function AboutHero() {
           className="display-xl mt-8 text-graphite"
         >
           <span className="block">
-            <SplitText text="We are building" />
+            <SplitText text="We wanted a better" />
           </span>
           <span className="block">
-            <SplitText text="the thing" delay={130} />
+            <SplitText text="way to get deals" delay={130} />
           </span>
           <span className="block text-graphite/60">
-            <SplitText text="we wanted." delay={260} />
+            <SplitText text="done." delay={260} />
           </span>
         </h1>
 

@@ -236,6 +236,7 @@
 
 /* Synthetic document intake and source review */
 .document-upload-area{margin-top:13px;padding-top:13px;border-top:1px solid #edf0eb;display:grid;gap:10px}
+.document-upload-area .visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 .document-drop-zone{display:grid;gap:4px;padding:15px;border:1px dashed #aab9a6;border-radius:7px;background:#f8faf6;color:#526056;cursor:pointer;text-align:center}
 .document-drop-zone:hover,.document-drop-zone:focus-visible{border-color:#6f9166;background:#f1f6ed;outline:2px solid #78996a33;outline-offset:2px}
 .document-drop-zone b{font-size:11px;color:#344639}

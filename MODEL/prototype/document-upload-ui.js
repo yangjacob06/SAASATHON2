@@ -103,6 +103,10 @@
     });
   }
 
+  function candidateValues(deal, field) {
+    return (deal.review && deal.review.proposedValues && deal.review.proposedValues[field]) || [];
+  }
+
   function showMessage(message, tone) {
     const area = document.getElementById("documentUploadStatus");
     if (!area) return;

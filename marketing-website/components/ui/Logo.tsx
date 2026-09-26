@@ -1,5 +1,5 @@
 /**
- * The Mandate mark: a graphite monogram tile beside the wordmark.
+ * The Mandate mark: a linked-deal symbol beside the wordmark.
  *
  * The tile is drawn rather than set in type so it keeps its exact optical
  * weight at every size, and the trailing dot gives the wordmark a terminal —
@@ -33,13 +33,15 @@ export function Logo({
           rx="9"
           fill={dark ? "var(--color-paper)" : "var(--color-graphite)"}
         />
-        {/* Two arches: the "m", and a quiet nod to two lenders under one deal. */}
+        {/* The linked path represents a deal connecting advisers and lenders. */}
         <path
-          d="M9 22.5V13.2c0-1.9 1.4-3.2 3.1-3.2 1.7 0 2.9 1.3 2.9 3.2v9.3M15 13.2c0-1.9 1.3-3.2 3-3.2s3 1.3 3 3.2v9.3"
+          d="M9 10h6a5 5 0 0 1 0 10h-1m9 2h-6a5 5 0 0 1 0-10h1"
           stroke={dark ? "var(--color-graphite)" : "var(--color-paper)"}
-          strokeWidth="2.1"
+          strokeWidth="2"
           strokeLinecap="round"
         />
+        <circle cx="8.7" cy="10.7" r="2" fill="var(--color-signal)" />
+        <circle cx="23.3" cy="21.3" r="2" fill="var(--color-signal)" />
       </svg>
       <span
         className={`font-display ${word} leading-none tracking-[-0.02em] ${

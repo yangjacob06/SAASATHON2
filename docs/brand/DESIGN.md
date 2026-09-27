@@ -1,6 +1,6 @@
 # Mandate — The right connection
 
-Approved direction: **Direction 02** in `RESEARCH/mandate-brand-directions.html`, chosen by the user on 27 September 2026. The reference file is retained unchanged.
+Approved direction: **Direction 02** in [the brand direction study](../../RESEARCH/mandate-brand-directions.html), chosen by the user on 27 September 2026. The reference file is retained unchanged.
 
 ## Identity
 

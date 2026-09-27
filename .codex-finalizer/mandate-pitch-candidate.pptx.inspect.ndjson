@@ -1,0 +1,37 @@
+{"kind":"deck","id":"pr/jpj3g1","name":"Deck"}
+{"kind":"layout","layoutId":"14712181-6ef6-4c7a-ba2c-69d48c8242f2","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"20dc2b28-584c-4930-a425-491c4a14a4d5","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/rkhpmg","slide":1,"title":"Mandate","textShapes":4}
+{"kind":"textbox","id":"sh/hsfetwrq","slide":1,"name":"title","text":"Mandate","textPreview":"Mandate","textChars":7,"textLines":1,"bbox":[72,190,730,130]}
+{"kind":"textbox","id":"sh/6lofeh83","slide":1,"name":"direction","text":"The right connection.","textPreview":"The right connection.","textChars":21,"textLines":1,"bbox":[80,332,680,53]}
+{"kind":"textbox","id":"sh/7mxwnm9o","slide":1,"name":"hook","text":"A clearer path from business information to lender conversations.","textPreview":"A clearer path from business information to lender conversations.","textChars":65,"textLines":1,"bbox":[80,410,595,100]}
+{"kind":"textbox","id":"sh/sn6xgrq9","slide":1,"name":"footer","text":"PRIVATE CREDIT, MADE CLEARER FOR ADVISERS","textPreview":"PRIVATE CREDIT, MADE CLEARER FOR ADVISERS","textChars":41,"textLines":1,"bbox":[80,630,700,26]}
+{"kind":"image","id":"im/2x8jqhwf","slide":1,"name":"","alt":"Mandate logo","bbox":[76,48,205,45.92]}
+{"kind":"image","id":"im/pkzi1wv6","slide":1,"name":"","alt":"Mandate connected line illustration","bbox":[792,112,420,445]}
+{"kind":"notes","id":"nt/rkhpmg","slide":1,"text":"Opening hook: Advisers often start with information spread across accounts, deal notes and lender criteria. Mandate brings those pieces together so the funding story is easier to review and explain. Then introduce the live demo."}
+{"kind":"slide","id":"sl/7hkyxt","slide":2,"title":"Why now: private credit","textShapes":11}
+{"kind":"textbox","id":"sh/4jux4j6p","slide":2,"name":"title","text":"Why now: private credit","textPreview":"Why now: private credit","textChars":23,"textLines":1,"bbox":[70,112,880,68]}
+{"kind":"textbox","id":"sh/pk3yd4na","slide":2,"name":"subtitle","text":"New Zealand businesses face changing funding options.","textPreview":"New Zealand businesses face changing funding options.","textChars":53,"textLines":1,"bbox":[72,183,855,34]}
+{"kind":"textbox","id":"sh/udsfypon","slide":2,"name":"period","text":"2023–24","textPreview":"2023–24","textChars":7,"textLines":1,"bbox":[76,272,340,76]}
+{"kind":"textbox","id":"sh/fe1g7up8","slide":2,"name":"fact-one","text":"SME lending declined, while shorter, smaller-scale finance became more common.","textPreview":"SME lending declined, while shorter, smaller-scale finance became more common.","textChars":78,"textLines":1,"bbox":[78,350,455,112]}
+{"kind":"textbox","id":"sh/gfax0z6t","slide":2,"name":"fact-one-source","text":"OECD Economic Surveys: New Zealand 2026","textPreview":"OECD Economic Surveys: New Zealand 2026","textChars":39,"textLines":1,"bbox":[78,475,470,24]}
+{"kind":"textbox","id":"sh/hg3y947y","slide":2,"name":"fact-two-kicker","text":"A broader set of lenders","textPreview":"A broader set of lenders","textChars":24,"textLines":1,"bbox":[600,275,475,42]}
+{"kind":"textbox","id":"sh/e9wzator","slide":2,"name":"fact-two","text":"Private credit is attracting new capital and can offer tailored structures. Each fund still brings its own criteria.","textPreview":"Private credit is attracting new capital and can offer tailored structures. Each fund still brings its own criteria.","textChars":116,"textLines":1,"bbox":[600,322,440,132]}
+{"kind":"textbox","id":"sh/72tonux8","slide":2,"name":"takeaway","text":"Advisers need a clear way to compare each deal with lender requirements.","textPreview":"Advisers need a clear way to compare each deal with lender requirements.","textChars":72,"textLines":1,"bbox":[76,525,820,50]}
+{"kind":"shape","id":"sh/610nepwn","slide":2,"name":"demo-strip","bbox":[70,601,1140,74]}
+{"kind":"textbox","id":"sh/t4b6pkfe","slide":2,"name":"demo-label","text":"LIVE DEMO","textPreview":"LIVE DEMO","textChars":9,"textLines":1,"bbox":[92,615,130,20]}
+{"kind":"textbox","id":"sh/s325gzet","slide":2,"name":"demo-url","text":"mandate-ollie-software.vercel.app","textPreview":"mandate-ollie-software.vercel.app","textChars":33,"textLines":1,"bbox":[92,635,500,25]}
+{"kind":"textbox","id":"sh/fqtorux4","slide":2,"name":"handoff","text":"Open the site for the product walkthrough, then return here for the close.","textPreview":"Open the site for the product walkthrough, then return here for the close.","textChars":74,"textLines":1,"bbox":[610,624,565,32]}
+{"kind":"image","id":"im/2p0fatgj","slide":2,"name":"","alt":"Mandate logo","bbox":[70,40,168,37.63]}
+{"kind":"image","id":"im/yxkfidgb","slide":2,"name":"","alt":"Mandate connected line illustration","bbox":[1010,250,220,205]}
+{"kind":"notes","id":"nt/7hkyxt","slide":2,"text":"Why now: OECD's 2026 New Zealand survey says SME lending declined sharply in 2023 and 2024 and that shorter, smaller-scale finance became more common. Chambers' 2026 New Zealand private-credit guide describes additional capital, tailored structures and a market that is still developing. The opportunity for Mandate is helping advisers review the fit and prepare a clear, checked funding story. Demo link: https://mandate-ollie-software.vercel.app/\nSources:\nOECD, OECD Economic Surveys: New Zealand 2026, https://www.oecd.org/en/publications/oecd-economic-surveys-new-zealand-2026_3ec5de98-en/full-report/unlocking-capital-markets-to-drive-growth_d1f7a7f7.html\nChambers and Partners, Private Credit 2026: New Zealand, https://practiceguides.chambers.com/practice-guides/private-credit-2026/new-zealand"}
+{"kind":"slide","id":"sl/kj2i95","slide":3,"title":"That’s how we","textShapes":6}
+{"kind":"textbox","id":"sh/z250rq1w","slide":3,"name":"close","text":"That’s how we\nMandate.","textPreview":"That’s how we | Mandate.","textChars":22,"textLines":2,"bbox":[78,150,760,220]}
+{"kind":"textbox","id":"sh/e1wji5kb","slide":3,"name":"next-title","text":"Next steps","textPreview":"Next steps","textChars":10,"textLines":1,"bbox":[82,425,260,35]}
+{"kind":"textbox","id":"sh/d0nip0jq","slide":3,"name":"next-1","text":"01   Validate lender criteria with adviser partners","textPreview":"01   Validate lender criteria with adviser partners","textChars":51,"textLines":1,"bbox":[82,475,720,34]}
+{"kind":"textbox","id":"sh/czu1gv25","slide":3,"name":"next-2","text":"02   Test the workflow on more deal types","textPreview":"02   Test the workflow on more deal types","textChars":41,"textLines":1,"bbox":[82,525,720,34]}
+{"kind":"textbox","id":"sh/ryl0nq1k","slide":3,"name":"next-3","text":"03   Refine lender-ready summaries and reports","textPreview":"03   Refine lender-ready summaries and reports","textChars":46,"textLines":1,"bbox":[82,575,800,34]}
+{"kind":"textbox","id":"sh/pc3ilgje","slide":3,"name":"thanks","text":"Thank you","textPreview":"Thank you","textChars":9,"textLines":1,"bbox":[84,642,280,27]}
+{"kind":"image","id":"im/tszud0zm","slide":3,"name":"","alt":"Mandate logo","bbox":[76,46,190,42.56]}
+{"kind":"image","id":"im/j2xs76hk","slide":3,"name":"","alt":"Mandate connected line illustration","bbox":[866,215,340,370]}
+{"kind":"notes","id":"nt/kj2i95","slide":3,"text":"Close: That's how we Mandate. Invite feedback from advisers and lenders on which checks, evidence and report formats would make this most useful in practice. Suggested next steps on screen are proposed validation work, not completed commitments."}

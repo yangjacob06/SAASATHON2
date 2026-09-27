@@ -10,7 +10,7 @@ We’re building subscription software for commercial finance advisers and broke
 
 ## Project scope
 
-See [Scope.md](Scope.md) for the product requirements, 30-hour build plan, team responsibilities and definition of done.
+See [product scope](docs/product/Scope.md) for the requirements, 30-hour build plan and definition of done. The current visual identity is recorded in the [brand guide](docs/brand/DESIGN.md), with the [verification record](docs/verification/VERIFICATION.md) and [interview guide](docs/research/interview_questions.md) alongside the other project documentation.
 
 ## Try the interactive demo
 

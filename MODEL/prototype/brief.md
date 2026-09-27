@@ -16,7 +16,7 @@ Mandate is an assistant to the adviser. The adviser remains responsible for chec
 
 ## Product context and current prototype
 
-The project is a subscription-software concept for New Zealand commercial finance advisers and brokers arranging private-credit deals. The repository's [README](../../README.md) describes how to open the static demo. [Scope.md](../../Scope.md) sets the SaaSathon prototype boundaries: fictional data, a complete example journey, a small fictional lender list, and no real borrower records, lender integrations, automated credit decisions, or payment processing.
+The project is a subscription-software concept for New Zealand commercial finance advisers and brokers arranging private-credit deals. The repository's [README](../../README.md) describes how to open the static demo. [Product scope](../../docs/product/Scope.md) sets the SaaSathon prototype boundaries: fictional data, a complete example journey, a small fictional lender list, and no real borrower records, lender integrations, automated credit decisions, or payment processing.
 
 The current prototype is a single static page. [index.html](index.html) contains both the marketing page and adviser workspace shell. [app.js](app.js) contains the sample deal records, page rendering, interactions, summary template, prewritten lender cards, activity list, and stage changes. [styles.css](styles.css) provides base styling and [layout.css](layout.css) adds later workspace layout overrides, including responsive rules. The demo's three deals and lender matches are hard-coded in JavaScript. Changes are held in memory for the page session; the theme preference is saved in local storage. No backend or model call is present.
 
@@ -261,7 +261,7 @@ The pre-implementation endpoint, request/response example, validation rules, and
 
 - Keep this brief as the shared description of intended behavior. If scope changes, update it in the same change as the implementation.
 - Agree on the fictional sample deal and criteria before implementing comparison logic. Keep all sample companies, documents, and lenders fictional.
-- Assign one person to integrate overlapping changes, consistent with `Scope.md`.
+- Assign one person to integrate overlapping changes, consistent with `../../docs/product/Scope.md`.
 - For each milestone, state which files changed, what now works, what remains simulated, and how the team can review it.
 - Preserve the marketing page and current sample deals while adding the new flow.
 - Keep API keys out of the repository and browser code. If a backend is later introduced, document local setup using a server-side environment variable without committing secret values.
@@ -269,7 +269,7 @@ The pre-implementation endpoint, request/response example, validation rules, and
 
 ## Decisions to validate with advisers
 
-The repository's [interview guide](../../RESEARCH/interview_questions.md) already asks about the information advisers collect, document types, useful summary sections, missing/conflicting figures, match explanations, trust boundaries, and data concerns. Use interview evidence to refine:
+The repository's [interview guide](../../docs/research/interview_questions.md) already asks about the information advisers collect, document types, useful summary sections, missing/conflicting figures, match explanations, trust boundaries, and data concerns. Use interview evidence to refine:
 
 - Which details are essential to capture before a deal can be useful?
 - Which documents most often contain the key figures, and how are discrepancies handled?
@@ -283,7 +283,7 @@ Until those questions are validated, treat the data fields, document types, crit
 ## Source files
 
 - [Project README](../../README.md)
-- [Project scope](../../Scope.md)
+- [Project scope](../../docs/product/Scope.md)
 - [Prototype page](index.html)
 - [Prototype interactions and sample data](app.js)
 - [Synthetic deal and lender examples](synthetic-data.js)
@@ -294,4 +294,4 @@ Until those questions are validated, treat the data fields, document types, crit
 - [Prototype layout overrides](layout.css)
 - [Local workflow and activity interactions](workflow-ui.js)
 - [Pre-implementation API contract](api-contract.md)
-- [Adviser interview guide](../../RESEARCH/interview_questions.md)
+- [Adviser interview guide](../../docs/research/interview_questions.md)

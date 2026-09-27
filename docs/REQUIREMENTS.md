@@ -32,4 +32,4 @@ Source CSV files are parsed strictly. The importer does not relax column counts 
 - No total borrowing-cost ranking is asserted for incomplete or incompatible terms. Received pricing is stored as sourced terms, not derived from target returns.
 - This first application loads a brokerage's records for its dashboard; server pagination and retention operations need scale testing before large portfolios.
 
-The test command is `pnpm test`. Actual final results and browser observations are recorded in `VERIFICATION.md`; tests are not considered passed merely because they exist.
+The test command is `pnpm test`. Actual final results and browser observations are recorded in [the verification log](verification/VERIFICATION.md); tests are not considered passed merely because they exist.

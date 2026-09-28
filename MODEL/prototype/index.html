@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="workspace-home.css">
   <link rel="stylesheet" href="landing.css">
   <link rel="stylesheet" href="workspace-brand.css">
+  <link rel="stylesheet" href="workspace-gate.css">
   <link rel="stylesheet" href="mandate-core-screens.css">
   <link rel="stylesheet" href="pitch-ai.css">
   <link rel="icon" type="image/svg+xml" href="assets/brand/mandate-favicon.svg">
@@ -52,9 +53,26 @@
     <footer class="footer wrap"><a class="brand" href="https://saasathon-2-sepia.vercel.app/" aria-label="Mandate — marketing home"><img class="brand-logo brand-logo-light" src="assets/brand/mandate-lockup.svg" alt="Mandate" width="214" height="48"><img class="brand-logo brand-logo-reverse" src="assets/brand/mandate-lockup-reverse.svg" alt="Mandate" width="214" height="48"></a><span>Helping advisers move private credit deals forward.</span><span>Demo concept · New Zealand</span></footer>
   </div>
 
+  <div class="workspace-gate hidden" id="workspaceGate" role="dialog" aria-modal="true" aria-labelledby="gateTitle" aria-describedby="gateNote">
+    <form class="workspace-gate-card" id="workspaceLogin" novalidate>
+      <a class="brand gate-brand" href="https://saasathon-2-sepia.vercel.app/" aria-label="Mandate home"><span class="brand-mark">M</span><span>mandate<span class="brand-dot">.</span></span></a>
+      <div class="gate-eyebrow">PRIVATE WORKSPACE</div>
+      <h1 id="gateTitle">Welcome back.</h1>
+      <p class="gate-copy">Sign in to continue to the Mandate demo workspace.</p>
+      <label for="gateUsername">Username</label>
+      <input id="gateUsername" name="username" type="text" autocomplete="username" required>
+      <label for="gatePassword">Password</label>
+      <input id="gatePassword" name="password" type="password" autocomplete="current-password" required>
+      <p class="gate-error" id="gateError" role="alert" aria-live="polite"></p>
+      <button class="button button-dark gate-submit" type="submit">Enter workspace <span>↗</span></button>
+      <button class="gate-cancel" id="gateCancel" type="button">Back to Mandate</button>
+      <p class="gate-note" id="gateNote">Shared demo access only. This static demo login is not production security; do not enter real client or borrower information.</p>
+    </form>
+  </div>
+
   <div class="app-shell hidden" id="appView">
     <aside class="sidebar"><a class="brand sidebar-brand" href="#" id="backHome"><img class="brand-logo brand-logo-light" src="assets/brand/mandate-lockup.svg" alt="Mandate" width="214" height="48"><img class="brand-logo brand-logo-reverse" src="assets/brand/mandate-lockup-reverse.svg" alt="Mandate" width="214" height="48"></a><div class="workspace-label">WORKSPACE</div><div class="workspace-switch"><span class="workspace-avatar">J</span><span><b>Jasper Finance</b><small>Adviser workspace</small></span><span class="switch-caret">⌄</span></div><div class="side-nav"><span class="side-heading">WORKSPACE</span><button class="nav-item active" data-page="overview"><span>◫</span>Overview</button><button class="nav-item" data-page="deals"><span>▣</span>Deals <span class="nav-count">3</span></button><button class="nav-item" data-page="lenders"><span>◎</span>Lenders</button><span class="side-heading side-heading-spaced">MANAGE</span><button class="nav-item" data-page="activity"><span>◷</span>Activity</button></div><div class="sidebar-bottom"><div class="beta-card"><span class="beta-chip">DEMO MODE</span><b>Your deal workspace</b><p>Explore with fictional sample information.</p><button id="resetDemo">Reset demo <span>↻</span></button></div><div class="profile"><div class="profile-avatar">OF</div><span><b>Ollie Farrelly</b><small>Finance adviser</small></span><span class="profile-menu">···</span></div></div></aside>
-    <main class="app-main"><header class="app-topbar"><div class="breadcrumbs"><span>Workspace</span><b>/</b><strong id="crumbTitle">Overview</strong></div><div class="topbar-right"><span class="privacy-tag"><span></span> Sample data only</span><button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">Dark mode</button><button class="help-button" id="helpButton" title="Demo information">?</button></div></header>
+    <main class="app-main"><header class="app-topbar"><div class="breadcrumbs"><span>Workspace</span><b>/</b><strong id="crumbTitle">Overview</strong></div><div class="topbar-right"><span class="privacy-tag"><span></span> Sample data only</span><button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">Dark mode</button><button class="help-button" id="helpButton" title="Demo information">?</button><button class="lock-workspace" id="lockWorkspace" type="button">Lock workspace</button></div></header>
       <div class="app-content" id="appContent">
         <div class="welcome-row"><div><div class="eyebrow">THURSDAY, 25 SEPTEMBER 2026</div><h1>Good evening, Ollie <span class="wave">✳</span></h1><p>Here’s where your deals are at today.</p></div><button class="button button-dark" id="newDeal"><span>＋</span> New deal</button></div>
         <div class="stat-grid"><div class="stat-card"><div class="stat-top"><span>Active deals</span><span class="stat-icon">▣</span></div><div class="stat-value">03</div><div class="stat-caption"><span class="green-dot"></span> Across your workspace</div></div><div class="stat-card"><div class="stat-top"><span>Needs your attention</span><span class="stat-icon stat-icon-amber">◷</span></div><div class="stat-value">02</div><div class="stat-caption">Follow-ups or information due</div></div><div class="stat-card"><div class="stat-top"><span>Potential lender fits</span><span class="stat-icon stat-icon-blue">⌁</span></div><div class="stat-value">07</div><div class="stat-caption">Across active sample deals</div></div></div>

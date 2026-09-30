@@ -11,7 +11,7 @@ const NEXT_LABEL: Partial<Record<ApplicationStatus, string>> = {
   summary_ready: "Mark sent to lenders",
   sent_to_lenders: "Mark term sheet received",
   term_sheet_received: "Mark approved",
-  approved: "Mark settled",
+  approved: "Record settlement",
 };
 
 export function ApplicationHeader({ app }: { app: Application }) {

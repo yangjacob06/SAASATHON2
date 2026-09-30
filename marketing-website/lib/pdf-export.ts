@@ -1,6 +1,5 @@
 /**
- * Renders a deal summary to a downloadable PDF. Pro plan facilities can
- * include the adviser's firm logo in the header.
+ * Renders a deal summary to a downloadable PDF, including the adviser's firm logo when set.
  */
 
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";

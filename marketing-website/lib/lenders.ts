@@ -141,15 +141,20 @@ export async function refreshApplicationLenders(app: Application): Promise<void>
 export interface ApplicationLenderRow extends Omit<ApplicationLender, "match_reasons"> {
   match_reasons: string[];
   lender: Lender;
+  share_id: string | null;
+  share_response: "interested" | "pass" | null;
+  share_response_note: string;
 }
 
 export async function listApplicationLenders(applicationId: string): Promise<ApplicationLenderRow[]> {
   const rows = await query<any>(
     `SELECT al.*, l.name AS lender_name, l.min_loan_cents, l.max_loan_cents, l.max_lvr_pct,
             l.regions AS lender_regions, l.loan_types AS lender_loan_types,
-            l.pre_sales_requirement, l.contact_email, l.notes AS lender_notes
+            l.pre_sales_requirement, l.contact_email, l.notes AS lender_notes, l.owner_user_id,
+            ds.id AS share_id, ds.response AS share_response, ds.response_note AS share_response_note
        FROM application_lenders al
        JOIN lenders l ON l.id = al.lender_id
+       LEFT JOIN deal_shares ds ON ds.application_id = al.application_id AND ds.lender_id = al.lender_id AND ds.revoked_at IS NULL
       WHERE al.application_id = $1
       ORDER BY al.match_score DESC`,
     [applicationId],
@@ -161,6 +166,9 @@ export async function listApplicationLenders(applicationId: string): Promise<App
     lender_id: r.lender_id,
     match_score: r.match_score,
     match_reasons: JSON.parse(r.match_reasons),
+    share_id: r.share_id,
+    share_response: r.share_response,
+    share_response_note: r.share_response_note ?? "",
     stage: r.stage,
     created_at: r.created_at,
     updated_at: r.updated_at,
@@ -175,6 +183,7 @@ export async function listApplicationLenders(applicationId: string): Promise<App
       pre_sales_requirement: r.pre_sales_requirement,
       contact_email: r.contact_email,
       notes: r.lender_notes,
+      owner_user_id: r.owner_user_id,
     },
   }));
 }

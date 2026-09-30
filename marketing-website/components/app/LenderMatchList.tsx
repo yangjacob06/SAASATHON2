@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/Card";
 import { refreshLenderMatchesAction, setLenderStageAction } from "@/lib/actions/applications";
+import { revokeDealShareAction, shareDealAction } from "@/lib/actions/lenders";
 import { formatMoneyCents } from "@/lib/status";
 import type { ApplicationLenderRow } from "@/lib/lenders";
 import type { LenderStage } from "@/lib/types";
@@ -69,6 +70,21 @@ export function LenderMatchList({ applicationId, matches }: { applicationId: str
                   </li>
                 ))}
               </ul>
+
+              <div className="mt-4 rounded-lg bg-paper-soft p-3">
+                {m.share_id ? (
+                  <div><p className="text-[12.5px] font-medium text-go">Deal shared with this fund{m.share_response ? ` · ${m.share_response === "interested" ? "Interested" : "Passed"}` : " · Awaiting response"}.</p>{m.share_response_note && <p className="mt-1 text-[12.5px] leading-relaxed text-graphite-soft">“{m.share_response_note}”</p>}<form action={revokeDealShareAction} className="mt-2"><input type="hidden" name="share_id" value={m.share_id} /><button type="submit" className="text-[11.5px] text-grey underline underline-offset-2">Revoke access to this deal</button></form></div>
+                ) : m.lender.owner_user_id ? (
+                  <form action={shareDealAction}>
+                    <input type="hidden" name="application_id" value={applicationId} />
+                    <input type="hidden" name="lender_id" value={m.lender.id} />
+                    <p className="mb-2 text-[12px] leading-relaxed text-grey">Share the borrower name, deal details and current summary with this fund. Uploaded source documents stay private.</p>
+                    <button type="submit" className="rounded-[var(--radius-control)] bg-graphite px-3 py-2 text-[12px] font-medium text-paper">Share this deal</button>
+                  </form>
+                ) : (
+                  <p className="text-[12px] text-grey">This matched fund has not joined Mandate yet.</p>
+                )}
+              </div>
 
               <div className="mt-4 flex flex-wrap gap-1.5">
                 {STAGE_ORDER.filter((s) => s !== m.stage).map((s) => (

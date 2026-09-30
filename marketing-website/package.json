@@ -2,10 +2,10 @@
   "name": "mandate",
   "version": "0.1.0",
   "private": true,
-  "description": "Mandate — deal preparation and lender matching for New Zealand commercial finance advisers.",
+  "description": "Mandate — a private-credit marketplace for New Zealand advisers and lenders.",
   "scripts": {
     "dev": "next dev --port 3310",
-    "build": "next build",
+    "build": "node scripts/db-deploy.mjs && next build",
     "start": "next start --port 3310",
     "lint": "next lint",
     "db:setup": "node scripts/db-setup.mjs",

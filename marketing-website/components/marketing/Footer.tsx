@@ -16,13 +16,14 @@ const COLUMNS = [
       { href: softwareAnchor("product"), label: "What it does" },
       { href: softwareAnchor("how-it-works"), label: "How it works" },
       { href: softwareAnchor("pricing"), label: "Pricing" },
+      { href: "/lenders", label: "For lenders" },
     ],
   },
   {
     title: "Account",
     links: [
       { href: "/login", label: "Sign in" },
-      { href: "/signup", label: "Start free trial" },
+      { href: "/signup", label: "Create a free account" },
     ],
   },
   {

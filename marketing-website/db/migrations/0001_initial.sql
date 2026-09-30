@@ -19,11 +19,6 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash          TEXT,
   firm_name              TEXT NOT NULL DEFAULT '',
   logo_url               TEXT,
-  plan                   TEXT NOT NULL DEFAULT 'trial',
-  subscription_status    TEXT NOT NULL DEFAULT 'trialing',
-  trial_ends_at          TEXT,
-  stripe_customer_id     TEXT,
-  stripe_subscription_id TEXT,
   created_at             TEXT NOT NULL
 );
 

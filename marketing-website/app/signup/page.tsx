@@ -7,7 +7,7 @@ import { SubmitButton } from "@/components/ui/SubmitButton";
 import { signUpAction } from "@/lib/actions/auth";
 import { getCurrentUser } from "@/lib/auth";
 
-export const metadata = { title: "Start your free trial" };
+export const metadata = { title: "Create an account" };
 
 export default async function SignupPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const user = await getCurrentUser();
@@ -17,8 +17,8 @@ export default async function SignupPage({ searchParams }: { searchParams: Promi
 
   return (
     <AuthShell
-      title="Start your free trial."
-      subtitle="14 days, no card required."
+      title="Create your Mandate account."
+      subtitle="Free to join and use. A success fee applies only when a deal settles."
       footer={
         <>
           Already have an account? <AuthLink href="/login">Sign in</AuthLink>.
@@ -60,7 +60,7 @@ export default async function SignupPage({ searchParams }: { searchParams: Promi
           <p className="mt-1.5 text-xs text-grey">At least 8 characters.</p>
         </div>
         <SubmitButton pendingLabel="Creating your account…" className="w-full">
-          Start free trial
+          Create free account
         </SubmitButton>
       </form>
     </AuthShell>

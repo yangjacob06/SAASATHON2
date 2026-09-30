@@ -7,15 +7,22 @@ import { Logo } from "@/components/ui/Logo";
 import { logOutAction } from "@/lib/actions/auth";
 import type { User } from "@/lib/types";
 
-const LINKS = [
-  { href: "/app", label: "Applications" },
-  { href: "/app/lenders", label: "Lenders" },
-  { href: "/app/billing", label: "Billing" },
-  { href: "/app/settings", label: "Settings" },
-];
-
-export function AppNav({ user }: { user: User }) {
+export function AppNav({ user, isMarketplaceAdmin }: { user: User; isMarketplaceAdmin: boolean }) {
   const pathname = usePathname();
+  const links = user.account_type === "lender"
+    ? [
+        { href: "/app/inbox", label: "Deal inbox" },
+        { href: "/app/criteria", label: "Lending criteria" },
+        { href: "/app/billing", label: "Fees" },
+        { href: "/app/settings", label: "Settings" },
+      ]
+    : [
+        { href: "/app", label: "Applications" },
+        { href: "/app/lenders", label: "Lenders" },
+        { href: "/app/billing", label: "Fees" },
+        { href: "/app/settings", label: "Settings" },
+        ...(isMarketplaceAdmin ? [{ href: "/app/lenders/review", label: "Lender review" }] : []),
+      ];
 
   return (
     <header className="border-b border-rule bg-paper-lift">
@@ -25,7 +32,7 @@ export function AppNav({ user }: { user: User }) {
             <Logo />
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
-            {LINKS.map((l) => {
+            {links.map((l) => {
               const isActive = l.href === "/app" ? pathname === "/app" : pathname.startsWith(l.href);
               return (
                 <Link
@@ -50,6 +57,12 @@ export function AppNav({ user }: { user: User }) {
           </form>
         </div>
       </div>
+      <nav aria-label="Workspace navigation" className="mx-auto flex max-w-6xl gap-5 overflow-x-auto px-6 pb-3 md:hidden">
+        {links.map((l) => {
+          const isActive = l.href === "/app" ? pathname === "/app" : pathname.startsWith(l.href);
+          return <Link key={`mobile-${l.href}`} href={l.href} className={`shrink-0 text-[12.5px] font-medium ${isActive ? "text-graphite" : "text-grey"}`}>{l.label}</Link>;
+        })}
+      </nav>
     </header>
   );
 }

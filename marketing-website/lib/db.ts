@@ -26,6 +26,8 @@ export interface Database {
   run(sql: string, params?: unknown[]): Promise<void>;
   /** Execute a multi-statement script (schema/seed files). */
   exec(script: string): Promise<void>;
+  /** Run a small set of related writes atomically. */
+  transaction<T>(work: (tx: Pick<Database, "query" | "one" | "run" | "exec">) => Promise<T>): Promise<T>;
 }
 
 function normaliseParams(params: unknown[]): Param[] {
@@ -65,6 +67,36 @@ async function createPostgres(url: string): Promise<Database> {
     },
     async exec(script: string) {
       await pool.query(script);
+    },
+    async transaction<T>(work: (tx: Pick<Database, "query" | "one" | "run" | "exec">) => Promise<T>) {
+      const client = await pool.connect();
+      const tx: Pick<Database, "query" | "one" | "run" | "exec"> = {
+        async query<T = Row>(sql: string, params: unknown[] = []) {
+          const res = await client.query(sql, normaliseParams(params));
+          return res.rows as T[];
+        },
+        async one<T = Row>(sql: string, params: unknown[] = []) {
+          const res = await client.query(sql, normaliseParams(params));
+          return (res.rows[0] as T) ?? null;
+        },
+        async run(sql: string, params: unknown[] = []) {
+          await client.query(sql, normaliseParams(params));
+        },
+        async exec(script: string) {
+          await client.query(script);
+        },
+      };
+      try {
+        await client.query("BEGIN");
+        const result = await work(tx);
+        await client.query("COMMIT");
+        return result;
+      } catch (error) {
+        await client.query("ROLLBACK");
+        throw error;
+      } finally {
+        client.release();
+      }
     },
   };
 }
@@ -112,6 +144,35 @@ async function createSqlite(file: string): Promise<Database> {
     async exec(script: string) {
       db.exec(script);
     },
+    async transaction<T>(work: (tx: Pick<Database, "query" | "one" | "run" | "exec">) => Promise<T>) {
+      const tx: Pick<Database, "query" | "one" | "run" | "exec"> = {
+        async query<T = Row>(sql: string, params: unknown[] = []) {
+          const [text, values] = toSqlite(sql, normaliseParams(params));
+          return db.prepare(text).all(...(values as never[])).map((row) => plain<T>(row));
+        },
+        async one<T = Row>(sql: string, params: unknown[] = []) {
+          const [text, values] = toSqlite(sql, normaliseParams(params));
+          const row = db.prepare(text).get(...(values as never[]));
+          return row === undefined || row === null ? null : plain<T>(row);
+        },
+        async run(sql: string, params: unknown[] = []) {
+          const [text, values] = toSqlite(sql, normaliseParams(params));
+          db.prepare(text).run(...(values as never[]));
+        },
+        async exec(script: string) {
+          db.exec(script);
+        },
+      };
+      db.exec("BEGIN IMMEDIATE");
+      try {
+        const result = await work(tx);
+        db.exec("COMMIT");
+        return result;
+      } catch (error) {
+        db.exec("ROLLBACK");
+        throw error;
+      }
+    },
   };
 }
 
@@ -122,6 +183,9 @@ const globalForDb = globalThis as unknown as { __mandateDb?: Promise<Database> }
 export function getDb(): Promise<Database> {
   if (!globalForDb.__mandateDb) {
     const url = process.env.DATABASE_URL;
+    if (process.env.NODE_ENV === "production" && !url) {
+      throw new Error("DATABASE_URL must point to persistent PostgreSQL in production.");
+    }
     globalForDb.__mandateDb = url
       ? createPostgres(url)
       : createSqlite(process.env.SQLITE_PATH || ".data/dev.db");

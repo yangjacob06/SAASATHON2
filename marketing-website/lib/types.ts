@@ -5,11 +5,9 @@ export interface User {
   password_hash: string | null;
   firm_name: string;
   logo_url: string | null;
-  plan: "trial" | "starter" | "pro";
-  subscription_status: "trialing" | "active" | "canceled";
-  trial_ends_at: string | null;
-  stripe_customer_id: string | null;
-  stripe_subscription_id: string | null;
+  account_type: "adviser" | "lender";
+  account_status: "active" | "pending" | "suspended";
+  lender_id: string | null;
   created_at: string;
 }
 
@@ -75,6 +73,51 @@ export interface Lender {
   pre_sales_requirement: PreSalesRequirement;
   contact_email: string;
   notes: string;
+  owner_user_id?: string | null;
+}
+
+export interface LenderPartnerApplication {
+  id: string;
+  user_id: string;
+  firm_name: string;
+  contact_name: string;
+  contact_email: string;
+  min_loan_cents: number;
+  max_loan_cents: number;
+  max_lvr_pct: number;
+  regions: string[];
+  loan_types: LoanPurpose[];
+  pre_sales_requirement: PreSalesRequirement;
+  notes: string;
+  status: "pending" | "approved" | "rejected";
+  created_at: string;
+  reviewed_at: string | null;
+}
+
+export interface DealShare {
+  id: string;
+  application_id: string;
+  lender_id: string;
+  shared_by: string;
+  shared_at: string;
+  revoked_at: string | null;
+  response: "interested" | "pass" | null;
+  response_note: string;
+  responded_at: string | null;
+}
+
+export interface SettlementRecord {
+  id: string;
+  application_id: string;
+  lender_id: string | null;
+  facility_amount_cents: number;
+  fee_amount_cents: number;
+  fee_bps: number;
+  fee_payer: "lender" | "adviser" | "borrower";
+  settled_at: string;
+  reference: string;
+  created_by: string;
+  created_at: string;
 }
 
 export type LenderStage = "matched" | "contacted" | "interested" | "declined";

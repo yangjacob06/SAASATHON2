@@ -22,6 +22,11 @@ export function RevealProvider() {
       return;
     }
 
+    // Only hide unrevealed content after this client-side observer is active.
+    // If the bundle fails or JavaScript is unavailable, server-rendered pages
+    // remain readable instead of appearing empty.
+    document.documentElement.setAttribute("data-reveal-ready", "");
+
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -57,6 +62,7 @@ export function RevealProvider() {
     return () => {
       observer.disconnect();
       mutations.disconnect();
+      document.documentElement.removeAttribute("data-reveal-ready");
     };
   }, []);
 

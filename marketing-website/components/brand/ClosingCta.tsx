@@ -48,7 +48,7 @@ export function ClosingCta() {
             </Link>
           </Magnetic>
           <p className="max-w-xs text-[14px] leading-relaxed text-grey-light">
-            Pricing, the full product and a 14-day trial are on the other side. No card to start.
+            Explore the platform. It is free to use, with a success fee only when a deal settles.
           </p>
         </div>
       </div>

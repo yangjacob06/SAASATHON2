@@ -84,7 +84,7 @@ export function Hero() {
                 href="/signup"
                 className="nudge inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-control)] bg-graphite px-6 py-3.5 sm:w-auto text-[14px] font-medium text-paper shadow-[0_10px_30px_-14px_rgb(23_80_58/0.7)] transition-[background-color,transform,box-shadow] duration-200 ease-[var(--ease-out-quint)] hover:-translate-y-px hover:bg-graphite"
               >
-                Start your 14-day free trial
+                Join Mandate for free
                 <ArrowUpRight />
               </Link>
               <a
@@ -101,7 +101,7 @@ export function Hero() {
               style={{ "--reveal-delay": "540ms" } as React.CSSProperties}
               className="mt-8 text-[13px] text-grey"
             >
-              No card required. Bring your first deal and see the summary it drafts.
+              Free to join and use · Success fee only when a deal settles
             </p>
           </div>
 

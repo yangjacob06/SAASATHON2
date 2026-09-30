@@ -5,7 +5,7 @@
  *
  *   npm run db:seed
  *
- * Log in with demo@mandate.test / demo1234
+ * Set MANDATE_DEMO_PASSWORD before seeding to choose the demo account password.
  */
 
 import { randomUUID, randomBytes, scryptSync } from "node:crypto";
@@ -24,6 +24,10 @@ function hashPassword(password) {
 }
 
 const DEMO_EMAIL = "demo@mandate.test";
+const DEMO_PASSWORD = process.env.MANDATE_DEMO_PASSWORD;
+if (!DEMO_PASSWORD) {
+  throw new Error("Set MANDATE_DEMO_PASSWORD before running the demo seed.");
+}
 
 const LENDERS = [
   {
@@ -143,9 +147,9 @@ try {
   const userId = id();
   await db.run(
     `INSERT INTO users
-       (id, email, name, password_hash, firm_name, plan, subscription_status, trial_ends_at, created_at)
-     VALUES ($1, $2, $3, $4, $5, 'trial', 'trialing', $6, $7)`,
-    [userId, DEMO_EMAIL, "Grace Tauwhare", hashPassword("demo1234"), "Blackwood Finance Partners", daysFromNow(11), daysAgo(19)],
+       (id, email, name, password_hash, firm_name, created_at)
+     VALUES ($1, $2, $3, $4, $5, $6)`,
+    [userId, DEMO_EMAIL, "Grace Tauwhare", hashPassword(DEMO_PASSWORD), "Blackwood Finance Partners", daysAgo(19)],
   );
 
   const lenderIds = {};
@@ -305,7 +309,7 @@ try {
     updatedDaysAgo: 2,
   });
 
-  console.log("Seeded demo adviser demo@mandate.test / demo1234 with 3 sample applications.");
+  console.log("Seeded the demo adviser account with 3 sample applications.");
 } finally {
   await db.close();
 }

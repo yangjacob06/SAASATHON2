@@ -46,8 +46,7 @@ export function AboutCta() {
             </Link>
           </Magnetic>
           <p className="max-w-xs text-[14px] leading-relaxed text-grey-light">
-            Mandate is live and in a 14-day trial. Bring a deal you are working on and see what it
-            does with it.
+            Join Mandate for free and bring a deal you are working on. A success fee applies only when it settles.
           </p>
         </div>
       </div>

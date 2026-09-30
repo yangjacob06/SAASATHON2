@@ -29,7 +29,7 @@ export function BrandFooter() {
       title: "Account",
       links: [
         { href: "/login", label: "Sign in" },
-        { href: "/signup", label: "Start free trial" },
+        { href: "/signup", label: "Create a free account" },
       ],
     },
   ];

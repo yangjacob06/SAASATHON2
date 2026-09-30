@@ -11,6 +11,7 @@ const LINKS = [
   { href: softwareAnchor("product"), label: "Product" },
   { href: softwareAnchor("how-it-works"), label: "How it works" },
   { href: softwareAnchor("pricing"), label: "Pricing" },
+  { href: "/lenders", label: "For lenders" },
 ];
 
 /**
@@ -92,7 +93,7 @@ export function Nav({ floating = false }: { floating?: boolean }) {
               href="/signup"
               className="nudge hidden items-center gap-2 rounded-[var(--radius-control)] bg-graphite px-4 py-2.5 text-[13.5px] font-medium text-paper transition-colors duration-200 hover:bg-graphite sm:inline-flex"
             >
-              Start free trial
+              Join for free
               <ArrowUpRight />
             </Link>
 
@@ -160,7 +161,7 @@ export function Nav({ floating = false }: { floating?: boolean }) {
             onClick={() => setOpen(false)}
             className="nudge mt-10 inline-flex items-center justify-center gap-2 rounded-[var(--radius-control)] bg-graphite px-6 py-4 text-[14px] font-medium text-paper"
           >
-            Start your 14-day free trial
+            Join Mandate for free
             <ArrowUpRight />
           </Link>
           <p className="mt-6 text-[13px] text-grey">

@@ -262,6 +262,14 @@ body {
   should feel like it settles, not like it flies in.
 */
 [data-reveal] {
+  /* Keep server-rendered content visible until the client reveal observer is ready. */
+  opacity: 1;
+  transform: none;
+  transition: none;
+  will-change: auto;
+}
+
+html[data-reveal-ready] [data-reveal]:not([data-shown]) {
   opacity: 0;
   transform: translate3d(0, 18px, 0);
   transition:
@@ -271,15 +279,15 @@ body {
   will-change: opacity, transform;
 }
 
-[data-reveal="fade"] {
+html[data-reveal-ready] [data-reveal="fade"]:not([data-shown]) {
   transform: none;
 }
 
-[data-reveal="right"] {
+html[data-reveal-ready] [data-reveal="right"]:not([data-shown]) {
   transform: translate3d(-22px, 0, 0);
 }
 
-[data-reveal="scale"] {
+html[data-reveal-ready] [data-reveal="scale"]:not([data-shown]) {
   transform: translate3d(0, 26px, 0) scale(0.985);
   transform-origin: center top;
 }

@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 
 import { requireUser } from "../auth";
-import { planFor } from "../billing";
 import { run } from "../db";
 import { saveFile } from "../storage";
 
@@ -18,9 +17,6 @@ export async function updateProfileAction(formData: FormData) {
 
 export async function uploadLogoAction(formData: FormData) {
   const user = await requireUser();
-  const plan = planFor(user);
-  if (plan?.id !== "pro") return; // Logo on PDF exports is a Pro feature.
-
   const file = formData.get("logo");
   if (!(file instanceof File) || file.size === 0) return;
 

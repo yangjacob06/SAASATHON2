@@ -24,15 +24,15 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL || "http://localhost:3310"),
   title: {
-    default: "Mandate — private-credit deals, placed faster",
+    default: "Mandate — New Zealand private-credit marketplace",
     template: "%s · Mandate",
   },
   description:
-    "Mandate helps New Zealand commercial finance advisers prepare deal summaries, match non-bank lenders and track loan applications from first enquiry to settlement.",
+    "Mandate connects New Zealand commercial finance advisers and private-credit funds to prepare, share and progress lending opportunities through to settlement.",
   openGraph: {
     title: "Mandate",
     description:
-      "Prepare and place private-credit deals in minutes, not days. Built for New Zealand commercial finance advisers.",
+      "A considered marketplace for New Zealand commercial finance advisers and private-credit funds.",
     type: "website",
   },
 };

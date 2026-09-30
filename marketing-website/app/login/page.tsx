@@ -21,7 +21,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       subtitle="Sign in to your applications."
       footer={
         <>
-          New to Mandate? <AuthLink href="/signup">Start a 14-day free trial</AuthLink>.
+          New to Mandate? <AuthLink href="/signup">Create a free account</AuthLink>.
         </>
       }
     >
@@ -51,9 +51,6 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         </SubmitButton>
       </form>
 
-      <p className="mt-6 rounded-[var(--radius-control)] border border-rule bg-paper-soft px-4 py-3 text-xs text-grey">
-        Demo account: <span className="font-medium text-graphite-soft">demo@mandate.test</span> / demo1234
-      </p>
     </AuthShell>
   );
 }

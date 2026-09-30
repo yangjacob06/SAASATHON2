@@ -1,25 +1,26 @@
 import { notFound } from "next/navigation";
 
+import { Alert } from "@/components/ui/Alert";
 import { ApplicationHeader } from "@/components/app/ApplicationHeader";
 import { DealSummaryCard } from "@/components/app/DealSummaryCard";
 import { DocumentsCard } from "@/components/app/DocumentsCard";
 import { LenderMatchList } from "@/components/app/LenderMatchList";
 import { Timeline } from "@/components/app/Timeline";
-import { requireUser } from "@/lib/auth";
-import { planFor } from "@/lib/billing";
+import { requireAdviser } from "@/lib/auth";
 import { one, query } from "@/lib/db";
 import { listApplicationLenders } from "@/lib/lenders";
 import type { Application, ApplicationDocument, ApplicationEvent, DealSummary } from "@/lib/types";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const app = await one<Application>(`SELECT client_name FROM applications WHERE id = $1`, [id]);
-  return { title: app?.client_name ?? "Application" };
+  const app = await one<Application>(`SELECT id FROM applications WHERE id = $1`, [id]);
+  return { title: app ? "Deal workspace" : "Application" };
 }
 
-export default async function ApplicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const user = await requireUser();
+export default async function ApplicationDetailPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string }> }) {
+  const user = await requireAdviser();
   const { id } = await params;
+  const { error } = await searchParams;
 
   const app = await one<Application>(`SELECT * FROM applications WHERE id = $1 AND adviser_id = $2`, [id, user.id]);
   if (!app) notFound();
@@ -31,11 +32,9 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
     listApplicationLenders(app.id),
   ]);
 
-  const plan = planFor(user);
-  const canExportWithLogo = plan?.id === "pro";
-
   return (
     <div className="space-y-8">
+      {error && <Alert tone="error">{error}</Alert>}
       <ApplicationHeader app={app} />
 
       <div className="grid gap-8 lg:grid-cols-3">
@@ -49,11 +48,6 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
         </div>
       </div>
 
-      {canExportWithLogo === false && summary && (
-        <p className="text-center text-[12.5px] text-grey">
-          PDF exports carry your firm name. Upgrade to Pro to include your logo too.
-        </p>
-      )}
     </div>
   );
 }

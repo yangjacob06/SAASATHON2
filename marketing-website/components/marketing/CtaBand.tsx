@@ -33,8 +33,8 @@ export function CtaBand() {
             style={{ "--reveal-delay": "80ms" } as React.CSSProperties}
             className="mt-5 max-w-md text-[15px] leading-relaxed text-paper/80"
           >
-            Start the trial with a deal you are already working on and see the summary and
-            shortlist it produces before you commit to anything.
+            Join Mandate for free, bring a deal you are already working on, and see the summary and
+            lender shortlist it produces. A fee applies only if a facility settles.
           </p>
         </div>
 
@@ -47,10 +47,10 @@ export function CtaBand() {
             href="/signup"
             className="nudge inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-signal px-7 py-4 text-[14px] font-medium text-graphite transition-[background-color,transform] duration-200 ease-[var(--ease-out-quint)] hover:-translate-y-px hover:bg-[#e6f2cc]"
           >
-            Start your 14-day free trial
+            Create a free account
             <ArrowUpRight />
           </Link>
-          <p className="text-[13px] text-paper/70">No card required · Cancel any time</p>
+          <p className="text-[13px] text-paper/70">Free to use · No deal, no fee</p>
         </div>
       </div>
     </section>

@@ -3,11 +3,13 @@ import { Card } from "@/components/ui/Card";
 import { FieldShell, Input, Select, Textarea } from "@/components/ui/Field";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import { createApplicationAction } from "@/lib/actions/applications";
+import { requireAdviser } from "@/lib/auth";
 import { NZ_REGIONS, PURPOSE_LABEL } from "@/lib/status";
 
 export const metadata = { title: "New application" };
 
 export default async function NewApplicationPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  await requireAdviser();
   const { error } = await searchParams;
 
   return (

@@ -3,14 +3,13 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
-import { requireUser } from "../auth";
-import { activeApplicationLimit } from "../billing";
+import { requireAdviser } from "../auth";
 import { newId, nowIso, one, query, run } from "../db";
 import { extractPdfText } from "../ai/pdf";
 import { generateDealSummary } from "../ai/summary";
 import { refreshApplicationLenders, setLenderStage as setLenderStageDb } from "../lenders";
 import { saveFile } from "../storage";
-import { ACTIVE_STATUSES, STATUS_LABEL } from "../status";
+import { STATUS_LABEL } from "../status";
 import type { Application, ApplicationStatus, LenderStage, LoanPurpose } from "../types";
 
 function fail(path: string, message: string): never {
@@ -35,18 +34,7 @@ function parseDollarsToCents(raw: FormDataEntryValue | null): number {
 }
 
 export async function createApplicationAction(formData: FormData) {
-  const user = await requireUser();
-
-  const limit = activeApplicationLimit(user);
-  if (limit !== null) {
-    const rows = await query<{ n: number }>(
-      `SELECT COUNT(*) AS n FROM applications WHERE adviser_id = $1 AND status IN (${ACTIVE_STATUSES.map((_, i) => `$${i + 2}`).join(",")})`,
-      [user.id, ...ACTIVE_STATUSES],
-    );
-    if (Number(rows[0]?.n ?? 0) >= limit) {
-      fail("/app/applications/new", `You've reached the ${limit}-application limit on your plan. Upgrade to Pro for unlimited applications.`);
-    }
-  }
+  const user = await requireAdviser();
 
   const clientName = String(formData.get("client_name") || "").trim();
   if (!clientName) fail("/app/applications/new", "Enter the client's name.");
@@ -107,7 +95,7 @@ async function storeDocument(applicationId: string, file: File) {
 }
 
 export async function uploadDocumentsAction(formData: FormData) {
-  const user = await requireUser();
+  const user = await requireAdviser();
   const applicationId = String(formData.get("application_id") || "");
   const app = await loadOwnedApplication(applicationId, user.id);
 
@@ -120,7 +108,7 @@ export async function uploadDocumentsAction(formData: FormData) {
 }
 
 export async function generateSummaryAction(formData: FormData) {
-  const user = await requireUser();
+  const user = await requireAdviser();
   const applicationId = String(formData.get("application_id") || "");
   const app = await loadOwnedApplication(applicationId, user.id);
 
@@ -157,7 +145,7 @@ export async function generateSummaryAction(formData: FormData) {
 }
 
 export async function updateSummaryAction(formData: FormData) {
-  const user = await requireUser();
+  const user = await requireAdviser();
   const applicationId = String(formData.get("application_id") || "");
   const app = await loadOwnedApplication(applicationId, user.id);
   const content = String(formData.get("content") || "");
@@ -172,7 +160,7 @@ export async function updateSummaryAction(formData: FormData) {
 }
 
 export async function refreshLenderMatchesAction(formData: FormData) {
-  const user = await requireUser();
+  const user = await requireAdviser();
   const applicationId = String(formData.get("application_id") || "");
   const app = await loadOwnedApplication(applicationId, user.id);
   await refreshApplicationLenders(app);
@@ -180,7 +168,7 @@ export async function refreshLenderMatchesAction(formData: FormData) {
 }
 
 export async function setLenderStageAction(formData: FormData) {
-  const user = await requireUser();
+  const user = await requireAdviser();
   const applicationId = String(formData.get("application_id") || "");
   await loadOwnedApplication(applicationId, user.id);
 
@@ -200,13 +188,14 @@ const NEXT_STATUS: Partial<Record<ApplicationStatus, ApplicationStatus>> = {
 };
 
 export async function advanceStatusAction(formData: FormData) {
-  const user = await requireUser();
+  const user = await requireAdviser();
   const applicationId = String(formData.get("application_id") || "");
   const app = await loadOwnedApplication(applicationId, user.id);
 
   const explicit = formData.get("status") ? (String(formData.get("status")) as ApplicationStatus) : null;
   const next = explicit ?? NEXT_STATUS[app.status];
   if (!next) return;
+  if (next === "settled") redirect(`/app/applications/${app.id}/settle`);
 
   const now = nowIso();
   await run(`UPDATE applications SET status = $1, updated_at = $2 WHERE id = $3`, [next, now, app.id]);
@@ -221,7 +210,7 @@ export async function advanceStatusAction(formData: FormData) {
 }
 
 export async function addNoteAction(formData: FormData) {
-  const user = await requireUser();
+  const user = await requireAdviser();
   const applicationId = String(formData.get("application_id") || "");
   const app = await loadOwnedApplication(applicationId, user.id);
   const message = String(formData.get("message") || "").trim();
@@ -236,7 +225,7 @@ export async function addNoteAction(formData: FormData) {
 }
 
 export async function addReminderAction(formData: FormData) {
-  const user = await requireUser();
+  const user = await requireAdviser();
   const applicationId = String(formData.get("application_id") || "");
   const app = await loadOwnedApplication(applicationId, user.id);
   const message = String(formData.get("message") || "").trim();
@@ -254,7 +243,7 @@ export async function addReminderAction(formData: FormData) {
 }
 
 export async function completeReminderAction(formData: FormData) {
-  const user = await requireUser();
+  const user = await requireAdviser();
   const applicationId = String(formData.get("application_id") || "");
   await loadOwnedApplication(applicationId, user.id);
   const eventId = String(formData.get("event_id") || "");

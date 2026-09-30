@@ -21,7 +21,6 @@ const scrypt = promisify(scryptCb) as (
 
 export const SESSION_COOKIE = "mandate_session";
 const SESSION_DAYS = 30;
-export const TRIAL_DAYS = Number(process.env.TRIAL_DAYS || 14);
 
 /* -------------------------------------------------------------------------- */
 /* Passwords                                                                   */
@@ -112,20 +111,23 @@ export async function createUser(params: {
   name: string;
   password: string;
   firmName: string;
+  accountType?: "adviser" | "lender";
+  accountStatus?: "active" | "pending";
 }): Promise<User> {
   const id = newId();
   const passwordHash = await hashPassword(params.password);
 
   await run(
-    `INSERT INTO users (id, email, name, password_hash, firm_name, plan, subscription_status, trial_ends_at, created_at)
-     VALUES ($1, $2, $3, $4, $5, 'trial', 'trialing', $6, $7)`,
+    `INSERT INTO users (id, email, name, password_hash, firm_name, account_type, account_status, created_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
     [
       id,
       params.email.trim().toLowerCase(),
       params.name.trim(),
       passwordHash,
       params.firmName.trim(),
-      trialEndsAt(),
+      params.accountType ?? "adviser",
+      params.accountStatus ?? "active",
       nowIso(),
     ],
   );
@@ -133,13 +135,30 @@ export async function createUser(params: {
   return (await one<User>(`SELECT * FROM users WHERE id = $1`, [id]))!;
 }
 
-export function trialEndsAt(from = new Date()): string {
-  return new Date(from.getTime() + TRIAL_DAYS * 86_400_000).toISOString();
-}
-
 /** Guard for every page under /app. */
 export async function requireUser(): Promise<User> {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
+  if (user.account_status === "pending") redirect("/lenders/pending");
+  if (user.account_status === "suspended") redirect("/login?error=Account+access+is+paused");
+  return user;
+}
+
+export async function requireAdviser(): Promise<User> {
+  const user = await requireUser();
+  if (user.account_type !== "adviser") redirect("/app");
+  return user;
+}
+
+export async function requireLender(): Promise<User> {
+  const user = await requireUser();
+  if (user.account_type !== "lender" || !user.lender_id) redirect("/app");
+  return user;
+}
+
+export async function requireMarketplaceAdmin(): Promise<User> {
+  const user = await requireUser();
+  const adminEmail = process.env.MANDATE_ADMIN_EMAIL?.trim().toLowerCase();
+  if (!adminEmail || user.email.toLowerCase() !== adminEmail) redirect("/app");
   return user;
 }

@@ -24,7 +24,7 @@ export async function signUpAction(formData: FormData) {
 
   const user = await createUser({ email, password, name, firmName });
   await createSession(user.id);
-  redirect("/app");
+  redirect(user.account_status === "pending" ? "/lenders/pending" : "/app");
 }
 
 export async function logInAction(formData: FormData) {
@@ -37,7 +37,7 @@ export async function logInAction(formData: FormData) {
   }
 
   await createSession(user.id);
-  redirect("/app");
+  redirect(user.account_status === "pending" ? "/lenders/pending" : "/app");
 }
 
 export async function logOutAction() {

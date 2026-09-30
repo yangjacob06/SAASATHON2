@@ -1,10 +1,10 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 import { StatusBadge } from "@/components/app/StatusBadge";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { requireUser } from "@/lib/auth";
-import { activeApplicationLimit, planFor } from "@/lib/billing";
+import { requireAdviser, requireUser } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { formatMoneyCents, PURPOSE_LABEL, STATUS_LABEL, ACTIVE_STATUSES } from "@/lib/status";
 import type { Application, ApplicationStatus } from "@/lib/types";
@@ -28,6 +28,8 @@ export default async function DashboardPage({
   searchParams: Promise<{ q?: string; status?: string }>;
 }) {
   const user = await requireUser();
+  if (user.account_type === "lender") redirect("/app/inbox");
+  await requireAdviser();
   const { q = "", status = "all" } = await searchParams;
 
   const conditions = ["adviser_id = $1"];
@@ -52,8 +54,6 @@ export default async function DashboardPage({
     [user.id, ...ACTIVE_STATUSES],
   );
   const activeCount = Number(activeCountRows[0]?.n ?? 0);
-  const limit = activeApplicationLimit(user);
-  const plan = planFor(user);
 
   return (
     <div>
@@ -61,8 +61,7 @@ export default async function DashboardPage({
         <div>
           <h1 className="font-display text-3xl text-graphite">Applications</h1>
           <p className="mt-1 text-[14px] text-grey">
-            {activeCount} active{limit !== null ? ` of ${limit}` : ""}
-            {plan ? ` on the ${plan.name} plan` : " on your free trial"}.
+            {activeCount} active {activeCount === 1 ? "deal" : "deals"}.
           </p>
         </div>
         <ButtonLink href="/app/applications/new">New application</ButtonLink>
